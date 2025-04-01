@@ -1,0 +1,84 @@
+.container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.dropzone {
+  position: relative;
+  padding: 2rem;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.dragActive {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.fileInput {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.uploadContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.uploadIcon {
+  width: 48px;
+  height: 48px;
+  stroke-width: 1.5;
+  color: #666;
+}
+
+.uploadProgress {
+  width: 100%;
+  position: relative;
+}
+
+.progressBar {
+  height: 4px;
+  background: #3b82f6;
+  border-radius: 2px;
+  transition: width 0.2s ease;
+}
+
+.uploadedFile {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(0, 255, 0, 0.1);
+  border-radius: 8px;
+  text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  .dropzone {
+    border-color: #444;
+  }
+  
+  .dragActive {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+  }
+
+  .uploadIcon {
+    color: #888;
+  }
+
+  .uploadedFile {
+    background: rgba(0, 255, 0, 0.05);
+  }
+} 
