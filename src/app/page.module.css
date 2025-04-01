@@ -181,6 +181,16 @@
 
   .navLinks {
     gap: 1rem;
+    justify-content: flex-end;
+  }
+  .logo {
+    font-size: 1.25rem;
+    justify-content: flex-start;
+  }
+
+  .logoIcon {
+    width: 1.5rem;
+    height: 1.5rem;
   }
 }
 
