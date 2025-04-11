@@ -2,7 +2,6 @@
 
 import './globals.css'
 import styles from './page.module.css'
-import PDFUploader from '@/components/PDFUploader'
 import Link from 'next/link'
 
 export default function Home() {
@@ -26,15 +25,7 @@ export default function Home() {
         <section className={styles.hero}>
           <div className={styles.heroContent}>
             <h1>Transform Your Study Experience</h1>
-            <p>Upload your syllabus and let StudyPilot organize your academic journey</p>
-            <div className={styles.uploadSection}>
-              <PDFUploader />
-            </div>
-          </div>
-          <div className={styles.heroGraphic}>
-            <svg className={styles.abstractShape} viewBox="0 0 200 200">
-              <path fill="#4F46E5" d="M39,-65.7C46.9,-56.8,47.3,-39.2,51.3,-24.7C55.4,-10.2,63.1,1.1,63.7,13.4C64.3,25.7,57.8,38.9,47.6,47.9C37.4,56.9,23.5,61.7,8.2,65.1C-7.1,68.6,-23.8,70.7,-36.9,64.9C-50,59.1,-59.5,45.4,-65.9,30.5C-72.3,15.6,-75.5,-0.5,-71.2,-14.1C-66.9,-27.7,-55,-38.8,-42.3,-46.9C-29.6,-55,-14.8,-60.1,1.3,-62C17.3,-63.9,31.1,-74.6,39,-65.7Z" transform="translate(100 100)" />
-            </svg>
+            <p>Let StudyPilot help you organize and optimize your academic journey</p>
           </div>
         </section>
 
