@@ -67,19 +67,14 @@ export default function Home() {
             <div>
               <h4>Product</h4>
               <Link href="/#features">Features</Link>
-            </div>
-            <div>
-              <h4>Company</h4>
               <Link href="/about">About</Link>
             </div>
             <div>
-              <h4>Legal</h4>
-              <Link href="/terms">Terms of Service</Link>
+              <h4>Company</h4>
+              <Link href="/privacy">Privacy</Link>
+              <Link href="/terms">Terms</Link>
             </div>
           </div>
-        </div>
-        <div className={styles.footerBottom}>
-          <p>&copy; {new Date().getFullYear()} StudyPilot. All rights reserved.</p>
         </div>
       </footer>
     </div>
