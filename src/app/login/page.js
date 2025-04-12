@@ -1,10 +1,13 @@
 "use client"
 
 import { useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import styles from './login.module.css'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -14,7 +17,7 @@ export default function Login() {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -23,19 +26,27 @@ export default function Login() {
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-        options: {
-          persistSession: rememberMe
-        }
+        email: email.trim(),
+        password: password
       })
 
-      if (error) throw error
+      if (error) {
+        if (error.message === 'Invalid login credentials') {
+          setError('Incorrect email or password. Please try again.')
+        } else {
+          setError(error.message)
+        }
+        return
+      }
 
-      router.push('/dashboard')
-      router.refresh()
+      if (data?.user) {
+        // Successful login
+        router.push('/dashboard')
+        router.refresh()
+      }
     } catch (error) {
-      setError(error.message)
+      console.error('Login error:', error)
+      setError('An error occurred during login. Please try again.')
     } finally {
       setLoading(false)
     }
