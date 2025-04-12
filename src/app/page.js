@@ -17,7 +17,7 @@ export default function Home() {
         <div className={styles.navLinks}>
           <Link href="#features">Features</Link>
           <Link href="/about">About</Link>
-          <button className={styles.loginButton}>Login</button>
+          <Link href="/login" className={styles.loginButton}>Login</Link>
         </div>
       </nav>
 
