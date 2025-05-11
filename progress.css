@@ -1,0 +1,58 @@
+.main {
+	gap: 20px;
+}
+
+.courses-ctn {
+	flex: 1;
+	height: auto;
+	justify-content: space-between;
+	gap: 25px;
+}
+
+.courses {
+	width: 33.33%;
+	gap: 10px;
+}
+
+.progress-ctn {
+	align-items: center;
+}
+
+.progress {
+	flex: 1;
+	background-color: var(--bar);
+	margin-right: 10px;
+	border-radius: 5px;
+	/* box-shadow: 0 0px 3px 0 #f1f1f1; */
+}
+
+.progress-bar {
+	background-color: var(--blue);
+	height: 8px;
+	border-radius: 8px 0 0 8px;
+}
+
+.progress-bar[data-progress-value="75%"] {
+	width: 75%;
+}
+
+.progress-bar[data-progress-value="45%"] {
+	width: 45%;
+}
+
+.progress-bar[data-progress-value="60%"] {
+	width: 60%;
+}
+
+.progress-value {
+	font-size: 14px;
+}
+
+.progress-analytics {
+	min-height: 70%;
+}
+
+#progress-progress-analytics-chart-ctn {
+	width: 250px;
+	margin: 20px auto;
+}
