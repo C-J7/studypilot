@@ -1,0 +1,35 @@
+
+/* Study Time Chart Styles */
+.studyTimeChartPlaceholder {
+    min-height: 200px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-light, #f9fafb);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    color: var(--text-secondary);
+  }
+  
+  .chartBars {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    height: 100px;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  .chartBar {
+    flex-grow: 1;
+    background-color: var(--primary, #3b82f6);
+    border-radius: 0.25rem 0.25rem 0 0;
+  }
+  
+  
+  @media (min-width: 768px) { 
+    .studyTimeCard {
+        grid-column: span 2 / span 2; 
+      }
+  }

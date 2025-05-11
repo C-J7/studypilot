@@ -1,0 +1,54 @@
+
+/* Top Courses Card Styles */
+.topCoursesCard {
+    background-color: var(--primary, #3b82f6); 
+    color: white;
+  }
+  
+  .topCoursesCard .cardTitleBase { /* Override for white title */
+    color: white;
+  }
+  
+  .courseGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .courseGrid {
+      grid-template-columns: repeat(2, minmax(0, 1fr)); 
+    }
+  }
+  
+  .courseCardItem {
+    background-color: rgba(255, 255, 255, 0.1); /* Lighter background for course items */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .courseCardItem h4 {
+    font-weight: 600;
+  }
+  
+  .noCourses {
+    grid-column: span 1 / span 1; /* Ensures it spans correctly if only one column */
+    text-align: center;
+    padding: 2rem 0;
+    color: var(--primary-lightest, #eff6ff);
+  }
+  
+  @media (min-width: 640px) {
+    .noCourses {
+      grid-column: span 2 / span 2; /* Ensures it spans correctly if two columns */
+    }
+  }
+
+  @media (min-width: 768px) { 
+    .topCoursesCardContainer {
+        grid-column: span 2 / span 2; 
+      }
+  }

@@ -44,7 +44,9 @@ StudyPilot is a modern university productivity platform that helps students orga
 
 - **Backend & Auth**
   - Supabase
-  - PostgreSQL
+  - Neon
+  - Springboot 
+  - GoogleCalender
   - Row Level Security (RLS)
 
 - **Deployment**

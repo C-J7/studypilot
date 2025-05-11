@@ -1,0 +1,57 @@
+/* Skeleton Loader Styles*/
+.skeletonContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* Space between skeleton items */
+  }
+  
+  .skeletonPulse {
+    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .skeletonHeightSmall {
+    height: 8rem; 
+  }
+  
+  .skeletonHeightLarge {
+    height: 16rem; 
+  }
+  
+  .skeletonBackground {
+    background-color: #e5e7eb; 
+  }
+  
+  .skeletonRounded {
+    border-radius: 0.5rem; /* Large border radius */
+  }
+  
+  .skeletonGrid {
+    display: grid;
+  }
+  
+  .skeletonGridCols1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .skeletonGridCols2 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  @media (min-width: 768px) {
+    .skeletonGridCols2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  
+  .skeletonGap {
+    gap: 1.5rem; 
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }

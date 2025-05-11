@@ -1,0 +1,22 @@
+/* Stats Card  Styles */
+.statsList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .statItemHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* medium */
+  }
+
+  @media (min-width: 768px) { 
+    .statsCard {
+        grid-column: span 1 / span 1; 
+      }
+  }
+
+  

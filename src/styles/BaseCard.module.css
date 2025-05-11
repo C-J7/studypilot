@@ -1,0 +1,22 @@
+/* Base Card Styles */
+.cardBase {
+    background-color: white;
+    border-radius: 0.75rem; /* Rounded corners */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 1.5rem;
+  }
+  
+  .cardHeaderBase {
+    margin-bottom: 1rem;
+  }
+  
+  .cardTitleBase {
+    font-size: 1.25rem; 
+    font-weight: 600; /* semibold */
+    color: var(--text-primary, #1f2937); /* Dark gray */
+  }
+  
+  .cardContentBase {
+    color: var(--text-secondary, #4b5563); /* Medium gray */
+  }
+  
