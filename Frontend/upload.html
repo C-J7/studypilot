@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+	<link rel="stylesheet" href="upload.css">
+    <title>Upload Syllabus - StudyPilot</title>
+</head>
+
+<body>
+    <div class="parent-ctn flex">
+        <aside class="sidebar flex column">
+            <h2>StudyPilot</h2>
+
+            <div class="profile flex">
+                <div class="profile-img-ctn">
+                    <img id="profile-image" src="" alt="">
+                </div>
+
+                <div class="user-info flex column">
+                    <span id="username">John Doe</span>
+                    <span id="department">Computer Science</span>
+                </div>
+            </div>
+
+            <div class="nav flex column">
+                    <a href="dashboard.html">
+                        <div class="nav-item flex">
+                            <img class="home icon" src="icons/home.png" alt="">
+                            <span>Dashboard</span>
+                        </div>
+                    </a>
+
+                    <a href="upload.html">
+                        <div class="nav-item flex active">
+                            <span class="nav-indicator"></span>
+                            <img class="upload icon" src="icons/upload.png" alt="">
+                            <span>Upload Syllabus</span>
+                        </div>
+                    </a>
+
+                    <a href="study-planner.html">
+                        <div class="nav-item flex">
+                            <img class="calendar-w icon" src="icons/calendar-w.png" alt="">
+                            <span>Study Planner</span>
+                        </div>
+                    </a>
+
+                    <a href="progress.html">
+                        <div class="nav-item flex">
+                            <img class="bars icon" src="icons/progress.png" alt="">
+                            <span>Progress</span>
+                        </div>
+                    </a>
+
+                    <a href="" class="logout-ctn">
+                        <div class="nav-item flex">
+                            <img class="logout icon" src="icons/logout.png" alt="">
+                            <span id="logout-btn">Logout</span>
+                        </div>
+                    </a>
+            </div>
+        </aside>
+
+        <div class="main flex column">
+            <div class="upload-ctn container flex column">
+                <h3>Upload Syllabus</h3>
+
+                <form class="drop-area">
+                    
+
+                    <label for="file-input" class="info flex column">
+                        <input type="file" id="file-input" accept="application/pdf" hidden>
+
+                        <div class="icon-placeholder flex column">
+                            <img src="icons/upload.png" class="upload icon" alt="">
+                        </div>
+
+                        <span id="prompt">Drop your files here or</span>
+                        <span id="browse">Browse</span>
+                        <span class="note">Supports PDF files only</span>
+                    </label>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
