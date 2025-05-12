@@ -1,4 +1,4 @@
-// Study Chart Card Component
+
 import styles from "../styles/StudyChartCard.module.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
