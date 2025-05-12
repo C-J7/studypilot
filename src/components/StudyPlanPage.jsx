@@ -35,8 +35,9 @@ export default function StudyPlanPage({ userId, syllabusId }) {
         syllabusId,
         userId,
       });
+      if (response.status !== 200) {
       setSuccess('Study plan generated successfully!');
-      fetchStudyPlans();
+      fetchStudyPlans();}
     } catch (err) {
       setError('Error generating study plan.');
     } finally {

@@ -94,15 +94,26 @@ export default function SyllabusPage() {
       <div className={styles.uploadContainer}>
         <h2>Upload Syllabus</h2>
         <form onSubmit={handleUpload}>
-          <input type="file" name="file" required />
+          <div className={styles.uploadDropzone}>
+            <input type="file" name="file" required className={styles.uploadFileInput} />
+            <div className={styles.uploadContent}>
+              <span className={styles.uploadIcon}>{/* SVG or icon can go here */}📄</span>
+              <span>Drag & drop or click to select a file</span>
+            </div>
+          </div>
           <input type="text" name="title" placeholder="Title" required />
           <input type="text" name="faculty" placeholder="Faculty" required />
           <input type="text" name="department" placeholder="Department" required />
           <input type="text" name="semester" placeholder="Semester" required />
           <input type="hidden" name="userId" value={userId} />
-          <button type="submit" disabled={uploading} className={styles.uploadIcon} >Upload</button>
+          <button type="submit" disabled={uploading} className={styles.uploadButton}>Upload</button>
         </form>
-        {uploading && <p>Uploading...</p>}
+        {uploading && (
+          <div className={styles.uploadProgress}>
+            <div className={styles.uploadProgressBar} style={{ width: '60%' }} />
+            <p>Uploading...</p>
+          </div>
+        )}
         {error && <p style={{ color: 'red' }}>{error}</p>}
         {success && <p style={{ color: 'green' }}>{success}</p>}
       </div>

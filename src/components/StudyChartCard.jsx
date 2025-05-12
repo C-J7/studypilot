@@ -3,6 +3,7 @@ import styles from "../styles/StudyChartCard.module.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import  Card  from "@/components/BaseCard"
+import SkeletonLoader from "./SkeletonLoader";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 export default function StudyChartCard() {
@@ -29,7 +30,7 @@ export default function StudyChartCard() {
   }, []);
 
   if (isLoading) {
-    return <div>Loading study chart...</div>;
+    return <SkeletonLoader />;
   }
 
   return (

@@ -1,0 +1,38 @@
+
+.themeToggleWrapper {
+  position: fixed;
+  top: 1.5rem;
+  right: 2rem;
+  z-index: 1000;
+}
+
+.themeToggleButton {
+  background: var(--background-alt);
+  border: none;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 0.5rem 1.25rem;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.themeToggleButton:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+.themeToggleIcon {
+  font-size: 1.25rem;
+  transition: color 0.2s;
+}
+
+.themeToggleLabel {
+  font-size: 1rem;
+  font-weight: 500;
+}

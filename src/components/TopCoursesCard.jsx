@@ -2,6 +2,7 @@
 import styles from "../styles/TopCoursesCard.module.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import SkeletonLoader from "./SkeletonLoader";
 
 function TopCoursesCard() {
   const [courses, setCourses] = useState([]);
@@ -29,7 +30,7 @@ function TopCoursesCard() {
   }, []);
 
   if (isLoading) {
-    return <div>Loading courses...</div>;
+    return <SkeletonLoader/>;
   }
 
   return (

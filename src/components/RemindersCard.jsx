@@ -2,6 +2,7 @@
 import styles from "../styles/RemindersCard.module.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import SkeletonLoader from "./SkeletonLoader";
 
 export default function RemindersCard() {
   const [reminders, setReminders] = useState([]);
@@ -28,7 +29,7 @@ export default function RemindersCard() {
   }, []);
 
   if (isLoading) {
-    return <div>Loading reminders...</div>;
+    return <SkeletonLoader/>
   }
 
   return (
