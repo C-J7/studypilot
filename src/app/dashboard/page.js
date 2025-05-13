@@ -1,101 +1,63 @@
-"use client"
+'use client'
 
-import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import styles from './dashboard.module.css'
-import StudyPlanPage from '@/components/StudyPlanPage'
-import WelcomeCard from '@/components/WelcomeCard';
-import TopCoursesCard from '@/components/TopCoursesCard';
-import StudyChartCard from '@/components/StudyChartCard';
-import RemindersCard from '@/components/RemindersCard';
-import StatsCard from '@/components/StatsCard';
-import SyllabusPage from '@/components/SyllabusPage'
-import axios from 'axios';
-import SkeletonLoader from '@/components/SkeletonLoader'
+import styles from './dashboard.module.css';
+import { Home, UploadFile, CalendarToday, BarChart, Logout } from '@mui/icons-material';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-export default function Dashboard() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [syllabusId, setSyllabusId] = useState(null);
-  const [dashboardData, setDashboardData] = useState(null);
-  const router = useRouter();
-  const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          setUser(user);
-          fetchDashboardData(user.id);
-        } else {
-          router.push('/login');
-        }
-      } catch (error) {
-        console.error('Error fetching user:', error);
-        router.push('/login');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchDashboardData = async (userId) => {
-      try {
-        const response = await axios.get(`/api/dashboard?userId=${userId}`);
-        setDashboardData(response.data);
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-      }
-    };
-
-    checkUser();
-  }, [router]);
-
-  const handleSignOut = async () => {
-    try {
-      await supabase.auth.signOut()
-      router.push('/login')
-    } catch (error) {
-      console.error('Error signing out:', error)
-    }
-  }
-
-  if (loading) {
-    return (
-      <SkeletonLoader/>
-    )
-  }
-
+const Dashboard = () => {
   return (
-    <div className={styles.page}>
-      <nav className={styles.navbar}>
-        <Link href="/" className={styles.logo}>
-          <span>StudyPilot</span>
-        </Link>
-        <div className={styles.navLinks}>
-          <button onClick={handleSignOut} className={styles.signOutButton}>
-            Sign Out
-          </button>
+    <div className={styles.parentctn + ' flex'}>
+      <div className={styles.sidebar + ' flex column'}>
+        <h2>StudyPilot</h2>
+        <div className={styles.main + ' flex column'}>
+              <h3>Welcome to the Dashboard</h3>
         </div>
-      </nav>
+        <div className={styles.profile + ' flex'}>
+          
+          <div className={styles.userinfo + ' flex column'}>
+            <span id="username">User</span>
+            <span id="department">Computer Science</span>
+          </div>
+        </div>
 
-      <main className={styles.main}>
-        <div className={styles.dashboardGrid}>
-          <WelcomeCard userName={user?.user_metadata?.name || 'User'} progress={dashboardData?.progress || 50} />
-          <TopCoursesCard courses={dashboardData?.courses || []} />
-          <StudyChartCard data={dashboardData?.studyChart || []} />
-          <SyllabusPage />
-          <StudyPlanPage userId={user?.id} syllabusId={syllabusId} />
-          <RemindersCard reminders={dashboardData?.reminders || []} />
-          <StatsCard stats={dashboardData?.stats || {}} />
+        <div className={styles.nav + ' flex column'}>
+          <a href="/dashboard">
+            <div className={styles.navitem + ' flex active'}>
+              <Home className={styles.icon + ' home'} />
+              <span>Dashboard</span>
+            </div>
+          </a>
+
+          <a href="/upload">
+            <div className={styles.navitem + ' flex'}>
+              <UploadFile className={styles.icon + ' upload'} />
+              <span>Upload Syllabus</span>
+            </div>
+          </a>
+
+          <a href="/study-planner">
+            <div className={styles.navitem + ' flex'}>
+              <CalendarToday className={styles.icon + ' calendar-w'} />
+              <span>Study Planner</span>
+            </div>
+          </a>
+
+          <a href="/progress">
+            <div className={styles.navitem + ' flex'}>
+              <BarChart className={styles.icon + ' bars'} />
+              <span>Progress</span>
+            </div>
+          </a>
+
+          <a href="#" className={styles.logoutctn}>
+            <div className={styles.navitem + ' flex'}>
+              <Logout className={styles.icon + ' logout'} />
+              <span id="logoutbtn">Logout</span>
+            </div>
+          </a>
         </div>
-      </main>
+      </div>
     </div>
   );
-}
+};
 
+export default Dashboard;

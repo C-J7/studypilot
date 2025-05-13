@@ -13,6 +13,7 @@ export default function Signup() {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
+    faculty: '',
     department: '',
     password: '',
     confirmPassword: ''
@@ -39,7 +40,7 @@ export default function Signup() {
     setError(null)
     setSuccess(false)
 
-    // Validate passwords match
+    //Validate Password
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords don't match")
       setLoading(false)
@@ -47,13 +48,14 @@ export default function Signup() {
     }
 
     try {
-      // Create auth user
+      //Create User
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
           data: {
             full_name: formData.fullName,
+            faculty: formData.faculty,
             department: formData.department
           }
         }
@@ -62,7 +64,7 @@ export default function Signup() {
       if (authError) throw authError
 
       if (authData?.user) {
-        // Create user profile in the database
+        //Create user profile in the database
         const { error: profileError } = await supabase
           .from('profiles')
           .insert([
@@ -70,14 +72,15 @@ export default function Signup() {
               id: authData.user.id,
               full_name: formData.fullName,
               email: formData.email,
-              department: formData.department
+              department: formData.department,
+              faculty: formData.faculty
             }
           ])
 
         if (profileError) throw profileError
 
         setSuccess(true)
-        // Wait for 2 seconds to show success message before redirecting
+        //Wait for 2 seconds to show success message before redirecting
         setTimeout(() => {
           router.push('/login')
         }, 2000)
@@ -93,9 +96,6 @@ export default function Signup() {
     <div className={styles.page}>
       <nav className={styles.navbar}>
         <Link href="/" className={styles.logo}>
-          <svg className={styles.logoIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
           <span>StudyPilot</span>
         </Link>
       </nav>
@@ -114,7 +114,7 @@ export default function Signup() {
 
             {success && (
               <div className={styles.success}>
-                Account created successfully! Redirecting to login...
+                Account created successfully! Back to login Page...
               </div>
             )}
 
@@ -141,6 +141,19 @@ export default function Signup() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email"
+                  required
+                />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label htmlFor="faculty">Faculty</label>
+                <input
+                  id="faculty"
+                  name="faculty"
+                  type="text"
+                  value={formData.faculty}
+                  onChange={handleChange}
+                  placeholder="Enter your faculty"
                   required
                 />
               </div>

@@ -4,10 +4,10 @@ import styles from './about.module.css'
 import Link from 'next/link'
 
 const teamMembers = [
-  { name: "Bamgbose Christian", role: "Team Lead", description: "Certified Full-stack developer with experience in Software Development" },
-  { name: "Blossom ", role: "Frontend Developer || Project Manager", description: "Specializes in Frontend development and Project Management." },
-  { name: "Goat", role: " UI/UX Designer", description: "Creates intuitive and accessible user interfaces" },
-  { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Focuses on implementing AI-driven study recommendations. Wahala pro max:)" },
+  { name: "Bamgbose Christian", role: "Team Lead", description: "Full-stack Software Developer and Project Lead" },
+  { name: "Blossom ", role: " Project Manager", description: "Specializes in  Project Management, Ensuring productivity and team management." },
+  { name: "Goat", role: " UI/UX Designer", description: "Creates intuitive and accessible User interfaces" },
+  { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Lorem Ipsium" },
   { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Lorem Ipsiums" },
   { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Lorem Ipsium" },
   { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Lorem Ipsium" },
