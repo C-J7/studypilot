@@ -6,12 +6,48 @@ import api from '../api/services/api'
 import styles from './dashboard.module.css'
 import { useAuth } from '@/contexts/AuthContext'
 import WelcomeCard from '@/components/WelcomeCard' 
+import { Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function Dashboard() {
   const { user } = useAuth() 
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [overallProgress, setOverallProgress] = useState(0) //State for overall progress
+  const [overallProgress, setOverallProgress] = useState(0) 
+  const chartData = {
+    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    datasets: [
+      {
+        label: 'Study Hours',
+        data: [2, 3, 1.5, 4, 2.5, 3, 1], 
+        backgroundColor: 'rgba(30, 58, 138, 0.8)', 
+        borderRadius: 4,
+      },
+    ],
+  };
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Weekly Study Time',
+      },
+    },
+  };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,7 +55,7 @@ export default function Dashboard() {
         setLoading(true); 
         try {
           
-          const mockProgress = Math.floor(Math.random() * 75) + 25; 
+          const mockProgress = Math.floor(Math.random() * 75) + 25; // Random progress between 25-100%
           setOverallProgress(mockProgress);
 
           const userId = user.id;
@@ -44,7 +80,7 @@ export default function Dashboard() {
       } else {
         setLoading(false); 
         setStats(null);   
-        setOverallProgress(0); 
+        setOverallProgress(0);
       }
     };
 
@@ -72,6 +108,7 @@ export default function Dashboard() {
     );
   }
 
+  
   const userNameForWelcomeCard = user?.user_metadata?.full_name || user?.email || 'User';
 
   return (
@@ -107,8 +144,9 @@ export default function Dashboard() {
           <div className={styles.chartSection}>
             <h4>Weekly Study Time</h4>
             <div className={styles.chartContainer}>
-              {/* Chart.js implementation would go here */}
-              <div className={styles.chartPlaceholder} />
+              <div className={styles.chartContainer}>
+          <Bar data={chartData} options={chartOptions} />
+            </div>
             </div>
           </div>
 

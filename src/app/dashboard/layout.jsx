@@ -19,16 +19,16 @@ export default function DashboardLayout({ children }) {
   const handleLogout = async () => {
     try {
       await signOut() // Use signOut from AuthContext
-      router.push('/login') // Redirect to login after sign out
+      router.push('/login') 
     } catch (error) {
       console.error('Logout error:', error)
-      // Optionally, show an error message to the user
+      
     }
   }
 
   if (loading || !user) { 
     return (
-      <div className={styles.pageLoader}> {/* Use a more generic loader for the layout */} 
+      <div className={styles.pageLoader}> 
         Loading StudyPilot...
       </div>
     );
@@ -52,8 +52,11 @@ export default function DashboardLayout({ children }) {
   return (
     <div className={styles.parentctn}>
       <div className={styles.sidebar}>
+        <div className={styles.logoctn}>
         <h2 className={styles.logo}>StudyPilot</h2> {/* Added class for logo styling */}
-        
+        </div>
+
+        {/* Profile Section */}
         <div className={styles.profile}>
           <div className={styles.profileimgctn}>
             {displayInitial}
