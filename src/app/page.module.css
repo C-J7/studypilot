@@ -53,11 +53,21 @@
   color: white;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  -webkit-text-fill-color: antiquewhite;
+  transition: background-color 0.2s, transform 0.3s;
+}
+.loginButton {
+  transition: background-color 0.3s ease, transform 0.3s ease, -webkit-text-fill-color 0.3s ease;
+}
+.loginButton:hover {
+  background: rgb(79, 128, 234);
+  -webkit-text-fill-color: aliceblue;
+  transform: scale(1.05);
 }
 
 .loginButton:hover {
-  background: var(--primary-dark);
+  background: rgb(74, 126, 238);
+  -webkit-text-fill-color: aliceblue;
 }
 
 .main {

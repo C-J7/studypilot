@@ -177,7 +177,7 @@
 }
 
 .submitButton {
-  background: var(--primary);
+  background: rgb(46, 92, 191);
   color: white;
   padding: 0.75rem;
   border: none;
@@ -185,12 +185,12 @@
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
   width: 100%;
 }
 
 .submitButton:hover {
-  background: var(--primary-dark);
+  background: rgb(73, 128, 247);
 }
 
 .submitButton:disabled {

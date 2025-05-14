@@ -149,19 +149,19 @@
 }
 
 .submitButton {
-  background: var(--primary);
+  background: rgb(43, 81, 165);
   color: white;
   padding: 0.75rem;
   border-radius: 0.5rem;
   font-weight: 500;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
   margin-top: 1rem;
 }
 
 .submitButton:hover {
-  background: var(--primary-dark);
+  background: rgb(74, 126, 238);
 }
 
 .submitButton:disabled {
