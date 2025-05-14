@@ -42,7 +42,6 @@ export default function Login() {
       if (data?.user) {
         // Successful login
         router.push('/dashboard')
-        router.refresh()
       }
     } catch (error) {
       console.error('Login error:', error)
@@ -153,4 +152,4 @@ export default function Login() {
       </main>
     </div>
   )
-} 
+}

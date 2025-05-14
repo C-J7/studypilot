@@ -1,12 +1,19 @@
 :root {
-    --blue: #3485f0;
-    --grey: #f8f8f8;
-    --light: #fefefe;
-    --dark: #2c2c2c;
-    --highlight: #ffffff33;
-    --border: #eee;
-    --bar: #f7f7f7
+  --primary: #1e3a8a;
+  --primary-light: #3b82f6;
+  --background: #ffffff;
+  --background-alt: #f8fafc;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border: #e2e8f0;
+  --error: #dc2626;
+  --success: #16a34a;
+}
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html,
@@ -21,10 +28,11 @@ body {
 body {
   color: var(--text-primary);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif, 'Inter';
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
+  color: var(--text-primary);
 }
 
 a {
@@ -55,3 +63,34 @@ a {
     height: 42px;
 }
 
+
+
+
+
+/* Animation classes */
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms;
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background-alt);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--primary-light);
+  border-radius: 4px;
+}

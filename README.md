@@ -1,5 +1,7 @@
 # StudyPilot 📚
 
+todo: npm install chart.js react-chartjs-2
+
 > Transform your academic journey with intelligent study planning and organization
 
 [![Next.js](https://img.shields.io/badge/Next.js-14.1.0-black)](https://nextjs.org/)

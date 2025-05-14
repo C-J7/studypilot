@@ -64,7 +64,7 @@ export default function Signup() {
       if (authError) throw authError
 
       if (authData?.user) {
-        //Create user profile in the database
+        //Create user profile in supabase
         const { error: profileError } = await supabase
           .from('profiles')
           .insert([
@@ -253,4 +253,4 @@ export default function Signup() {
       </main>
     </div>
   )
-} 
+}
