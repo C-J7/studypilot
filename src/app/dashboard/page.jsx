@@ -5,22 +5,21 @@ import { SkeletonLoader } from '@/components/SkeletonLoader'
 import api from '../api/services/api'
 import styles from './dashboard.module.css'
 import { useAuth } from '@/contexts/AuthContext'
-import WelcomeCard from '@/components/WelcomeCard' // Import WelcomeCard
+import WelcomeCard from '@/components/WelcomeCard' 
 
 export default function Dashboard() {
   const { user } = useAuth() 
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [overallProgress, setOverallProgress] = useState(0) // State for overall progress
+  const [overallProgress, setOverallProgress] = useState(0) //State for overall progress
 
   useEffect(() => {
     const fetchData = async () => {
       if (user && user.id) {
         setLoading(true); 
         try {
-          // Simulate fetching overall progress - replace with actual API call if available
-          // For now, let's assume it might come from user profile or a separate endpoint
-          const mockProgress = Math.floor(Math.random() * 75) + 25; // Random progress between 25-100%
+          
+          const mockProgress = Math.floor(Math.random() * 75) + 25; 
           setOverallProgress(mockProgress);
 
           const userId = user.id;
@@ -30,29 +29,29 @@ export default function Dashboard() {
           ]);
           setStats({
             courses: syllabiRes.data.length,
-            currentStreak: 5, // Placeholder
-            longestStreak: 7, // Placeholder
-            studyHours: 14,   // Placeholder
+            currentStreak: 5, //Placeholder
+            longestStreak: 7, //Placeholder
+            studyHours: 14,   //Placeholder
             upcomingSessions: plansRes.data.flatMap(plan => plan.sessions).length
           });
         } catch (error) {
           console.error('Dashboard error:', error);
           setStats(null); 
-          setOverallProgress(0); // Reset progress on error
+          setOverallProgress(0); //Reset progress on error
         } finally {
           setLoading(false);
         }
       } else {
         setLoading(false); 
         setStats(null);   
-        setOverallProgress(0); // Reset progress if no user
+        setOverallProgress(0); 
       }
     };
 
     fetchData();
   }, [user]);
 
-  // Handle loading state
+  //Handle loading state
   if (loading) {
     return (
       <div className={styles.container}>
@@ -73,8 +72,6 @@ export default function Dashboard() {
     );
   }
 
-  // Handle case where loading is false, but stats is null (error or no data)
-  // User might still be available for WelcomeCard
   const userNameForWelcomeCard = user?.user_metadata?.full_name || user?.email || 'User';
 
   return (
