@@ -6,7 +6,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import api, { completeSession } from '@/app/api/services/api'
-import { SkeletonLoader } from '@/components/SkeletonLoader'
+import  SkeletonLoader  from '@/components/SkeletonLoader'
 import styles from './planner.module.css'
 import { useAuth } from '@/contexts/AuthContext' 
 

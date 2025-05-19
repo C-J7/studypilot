@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { SkeletonLoader } from '@/components/SkeletonLoader'
+import SkeletonLoader from '@/components/SkeletonLoader'
 import styles from './dashboard.module.css'
 import { useAuth } from '@/contexts/AuthContext'
 import WelcomeCard from '@/components/WelcomeCard' 

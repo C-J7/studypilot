@@ -2,15 +2,30 @@
 
 import { useEffect, useState } from 'react'
 import { Bar, Line } from 'react-chartjs-2'
+import { Chart, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
+
+
+
 import { motion } from 'framer-motion'
 import api from '@/app/api/services/api'
-import { SkeletonLoader } from '@/components/SkeletonLoader'
+import SkeletonLoader from '@/components/SkeletonLoader'
 import styles from './progress.module.css'
 import { useAuth } from '@/contexts/AuthContext' 
 
+//To use we need to register the components we are using
+Chart.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend)
+
+
+const defaultProgressData = {
+  dailyProgress: [],
+  streakProgress: [],
+  currentStreak: 1,
+  longestStreak: 1,
+};
+
 const ProgressPage = () => { 
   const { user } = useAuth() 
-  const [progressData, setProgressData] = useState(null)
+  const [progressData, setProgressData] = useState(defaultProgressData)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -19,23 +34,23 @@ const ProgressPage = () => {
         setLoading(true); 
         try {
           const response = await api.get(`/api/progress/user/${user.id}`)
-          setProgressData(response.data)
+          setProgressData(response.data || defaultProgressData)
         } catch (error) {
           console.error('Error fetching progress:', error)
-          setProgressData(null); 
+          setProgressData(defaultProgressData); 
         } finally {
           setLoading(false)
         }
       } else {
         setLoading(false); 
-        setProgressData(null); 
+        setProgressData(defaultProgressData); 
       }
     }
 
     fetchProgress()
   }, [user])
 
-  //In the event progress data is null
+  //In the event progress data is default
   const chartData = {
     labels: progressData?.dailyProgress?.map(day => day.date) || [],
     datasets: [{
@@ -50,7 +65,7 @@ const ProgressPage = () => {
     labels: progressData?.streakProgress?.map(week => `Week ${week.week}`) || [],
     datasets: [{
       label: 'Study Streak',
-      data: progressData?.streakProgress?.map(week => week.days) || [], // Corrected: week.days instead of streak.days
+      data: progressData?.streakProgress?.map(week => week.days) || [], 
       borderColor: '#1e3a8a',
       tension: 0.4
     }]
@@ -69,18 +84,6 @@ const ProgressPage = () => {
     );
   }
 
-  if (!progressData) {
-    return (
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className={styles.container}
-      >
-        <h2>Progress Analytics</h2>
-        <p>Could not load progress data. Please try again later.</p>
-      </motion.div>
-    );
-  }
 
   return (
     <motion.div 
