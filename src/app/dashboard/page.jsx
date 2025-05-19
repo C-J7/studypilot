@@ -56,12 +56,12 @@ export default function Dashboard() {
     },
   };
 
-  // Search syllabus by faculty/department
+  //Search syllabus by faculty/department
   const handleSearch = async (faculty, department, query) => {
     setSearchLoading(true);
     setSearchError(null);
     try {
-      // Query syllabus table for user's faculty/department
+      //Query syllabus table for user's faculty/department
       const { data, error } = await supabase
         .from('syllabus')
         .select('*')
@@ -112,7 +112,7 @@ export default function Dashboard() {
 
   const userNameForWelcomeCard = user?.user_metadata?.full_name || user?.email || 'User';
 
-  // Quick stats
+  //Quick stats
   const quickStats = [
     { label: 'Courses', value: stats.courses },
     { label: 'Current Streak', value: `${stats.currentStreak} days` },
@@ -123,12 +123,7 @@ export default function Dashboard() {
     <div className={styles.dashboardGrid}>
       <WelcomeCard userName={userNameForWelcomeCard} progress={progress?.[0]?.overall_progress || 0} />
       <SearchBar onSearch={handleSearch} loading={searchLoading} error={searchError} results={searchResults} />
-      {/*Conditional rendering for the rest of the dashboard based on stats availability from backend*/}
-      {stats.courses === 0 && stats.studyHours === 0 && stats.upcomingSessions === 0 ? (
-        <p className={styles.dataMessage}>Could not load detailed dashboard statistics. Please try refreshing. 
-        <BackendTest/>
-        </p>
-      ) : (
+      
         <>
           <BaseCard className={styles.quickStatsCard}>
             <h3>Quick Stats</h3>
@@ -147,7 +142,6 @@ export default function Dashboard() {
           <TopCoursesCard courses={syllabus} progress={progress} />
           <RemindersCard reminders={reminders} />
         </>
-      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 
 import { useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/utils/supabase'
 
 export const useRealTimeUpdates = (table, callback) => {
   useEffect(() => {

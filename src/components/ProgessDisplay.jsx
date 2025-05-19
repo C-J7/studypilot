@@ -1,4 +1,4 @@
-// Reusable Progress Component
+//Reusable Progress Component
 import styles from "../styles/ProgressDisplay.module.css";
 import { motion } from "framer-motion";
 

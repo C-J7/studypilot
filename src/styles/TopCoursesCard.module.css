@@ -1,11 +1,9 @@
-
-/* Top Courses Card Styles */
 .topCoursesCard {
     background-color: var(--primary, #3b82f6); 
     color: white;
   }
   
-  .topCoursesCard .cardTitleBase { /* Override for white title */
+  .topCoursesCard .cardTitleBase { /*Overide for use*/
     color: white;
   }
   
@@ -22,7 +20,7 @@
   }
   
   .courseCardItem {
-    background-color: rgba(255, 255, 255, 0.1); /* Lighter background for course items */
+    background-color: rgba(255, 255, 255, 0.1); 
     padding: 1rem;
     border-radius: 0.5rem;
     display: flex;
@@ -35,7 +33,7 @@
   }
   
   .noCourses {
-    grid-column: span 1 / span 1; /* Ensures it spans correctly if only one column */
+    grid-column: span 1 / span 1; 
     text-align: center;
     padding: 2rem 0;
     color: var(--primary-lightest, #eff6ff);
@@ -43,7 +41,7 @@
   
   @media (min-width: 640px) {
     .noCourses {
-      grid-column: span 2 / span 2; /* Ensures it spans correctly if two columns */
+      grid-column: span 2 / span 2; 
     }
   }
 

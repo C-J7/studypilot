@@ -1,4 +1,3 @@
-/* Stats Card  Styles */
 .statsList {
     display: flex;
     flex-direction: column;
@@ -9,8 +8,8 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.25rem;
-    font-size: 0.875rem; /* text-sm */
-    font-weight: 500; /* medium */
+    font-size: 0.875rem; 
+    font-weight: 500;
   }
 
   @media (min-width: 768px) { 

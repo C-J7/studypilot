@@ -7,14 +7,14 @@ import PropTypes from 'prop-types';
  * @param {Object[]} progress - Array of progress objects (with course id or title and percent).
  */
 const TopCoursesCard = ({ courses = [], progress = [] }) => {
-  // Map course progress by course id or title for quick lookup
+  //Map course progress by course id or title for quick lookup
   const progressMap = {};
   progress?.forEach(p => {
     if (p.courseId) progressMap[p.courseId] = p.percent;
     if (p.title) progressMap[p.title] = p.percent;
   });
 
-  // Show up to 3 top courses by progress (or just first 3 if no progress)
+  //Show up to 3 top courses by progress (or just first 3 if no progress)
   const topCourses = courses.slice(0, 3);
 
   return (

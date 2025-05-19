@@ -1,6 +1,6 @@
 'use client'
 import { motion } from 'framer-motion';
-import styles from '@/styles/WelcomeCard.module.css'; // We'll create this CSS module next
+import styles from '@/styles/WelcomeCard.module.css';
 
 const WelcomeCard = ({ userName, progress = 0 }) => {
   const firstName = userName?.split(' ')[0] || 'User';

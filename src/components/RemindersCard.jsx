@@ -1,4 +1,4 @@
-// Reminders Card Component: List of reminders 
+//Reminders Card Component: List of reminders 
 import styles from "../styles/RemindersCard.module.css";
 import axios from "axios";
 import { useEffect, useState } from "react";

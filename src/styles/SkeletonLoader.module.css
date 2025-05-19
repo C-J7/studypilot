@@ -1,8 +1,7 @@
-/* Skeleton Loader Styles*/
 .skeletonContainer {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem; /*Space between skeleton items*/
+    gap: 1.5rem; 
   }
   
   .skeletonPulse {

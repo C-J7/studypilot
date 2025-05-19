@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/utils/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 
 const DashboardContext = createContext({});
