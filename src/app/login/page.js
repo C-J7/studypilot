@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import styles from './login.module.css'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -16,13 +17,31 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [successMsg, setSuccessMsg] = useState('')
+  const [infoMsg, setInfoMsg] = useState('')
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotLoading, setForgotLoading] = useState(false)
+  const [forgotSent, setForgotSent] = useState(false)
   const router = useRouter()
   const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+  //Remember Me: persist session in localStorage
+  useEffect(() => {
+    if (rememberMe && email) {
+      localStorage.setItem('rememberedEmail', email)
+    }
+  }, [rememberMe, email])
+
+  useEffect(() => {
+    const remembered = localStorage.getItem('rememberedEmail')
+    if (remembered) setEmail(remembered)
+  }, [])
 
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
+    setSuccessMsg('Signing in...')
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -31,122 +50,93 @@ export default function Login() {
       })
 
       if (error) {
-        if (error.message === 'Invalid login credentials') {
-          setError('Incorrect email or password. Please try again.')
-        } else {
-          setError(error.message)
-        }
+        setError(error.message === 'Invalid login credentials' ? 'Incorrect email or password. Please try again.' : error.message)
+        setSuccessMsg('')
         return
       }
 
       if (data?.user) {
-        // Successful login
-        router.push('/dashboard')
+        setSuccessMsg('Login successful! Loading Dashboard...')
+        setTimeout(() => router.push('/dashboard'), 1200)
       }
     } catch (error) {
-      console.error('Login error:', error)
       setError('An error occurred during login. Please try again.')
+      setSuccessMsg('')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault()
+    setForgotLoading(true)
+    setInfoMsg('')
+    setForgotSent(false)
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail)
+      if (error) throw error
+      setForgotSent(true)
+      setInfoMsg('Password reset email sent! Check your inbox.')
+    } catch (err) {
+      setInfoMsg('Failed to send reset email.')
+    } finally {
+      setForgotLoading(false)
     }
   }
 
   return (
     <div className={styles.page}>
       <nav className={styles.navbar}>
-        <Link href="/" className={styles.logo}>
-          <span>StudyPilot</span>
-        </Link>
+        <a className={styles.logo} href="/">
+          <img src="/SPlogo.png" alt="StudyPilot Logo" className={styles.logoIcon} />
+          StudyPilot
+        </a>
       </nav>
-
       <main className={styles.main}>
         <div className={styles.authContainer}>
           <div className={styles.authCard}>
-            <h1>Welcome Back</h1>
-            <p className={styles.subtitle}>Sign in to continue to StudyPilot</p>
-
-            {error && (
-              <div className={styles.error}>
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleLogin} className={styles.form}>
+            <h1>Sign In</h1>
+            <p className={styles.subtitle}>Welcome back! Please login to your account.</p>
+            {error && <div className={styles.error}>{error}</div>}
+            {successMsg && <div className={styles.success}>{successMsg}</div>}
+            {infoMsg && <div className={styles.info}>{infoMsg}</div>}
+            <form className={styles.form} onSubmit={handleLogin}>
               <div className={styles.inputGroup}>
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  required
-                />
+                <label>Email</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required autoFocus />
               </div>
-
               <div className={styles.inputGroup}>
-                <label htmlFor="password">Password</label>
+                <label>Password</label>
                 <div className={styles.passwordInput}>
-                  <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    required
-                  />
-                  <button
-                    type="button"
-                    className={styles.visibilityToggle}
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                    ) : (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                      </svg>
-                    )}
+                  <input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required />
+                  <button type="button" className={styles.visibilityToggle} onClick={() => setShowPassword(v => !v)} tabIndex={-1}>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
                   </button>
                 </div>
               </div>
-
               <div className={styles.options}>
                 <label className={styles.rememberMe}>
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                  />
-                  <span>Remember me</span>
+                  <input type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} /> Remember me
                 </label>
-                <Link href="/forgot-password" className={styles.forgotPassword}>
-                  Forgot password?
-                </Link>
+                <button type="button" className={styles.forgotPassword} onClick={() => setInfoMsg('forgot')}>Forgot password?</button>
               </div>
-
-              <button
-                type="submit"
-                className={styles.submitButton}
-                disabled={loading}
-              >
-                {loading ? 'Signing in...' : 'Sign in'}
-              </button>
+              <button className={styles.submitButton} type="submit" disabled={loading}>{loading ? (successMsg === 'Signing in...' ? 'Signing in...' : 'Loading Dashboard...') : 'Sign In'}</button>
             </form>
-
-            <div className={styles.divider}>
-              <span>or</span>
+            {infoMsg === 'forgot' && (
+              <form className={styles.form} onSubmit={handleForgotPassword} style={{marginTop: 16}}>
+                <div className={styles.inputGroup}>
+                  <label>Enter your email to reset password</label>
+                  <input type="email" value={forgotEmail} onChange={e => setForgotEmail(e.target.value)} required />
+                </div>
+                <button className={styles.submitButton} type="submit" disabled={forgotLoading}>{forgotLoading ? 'Sending...' : 'Send Reset Email'}</button>
+                {forgotSent && <div className={styles.success}>Check your email for reset instructions.</div>}
+              </form>
+            )}
+            <div className={styles.divider}><span>or</span></div>
+            <div className={styles.signupPrompt}>
+              Don't have an account? <a className={styles.signupLink} href="/signup">Sign up</a>
             </div>
-
-            <p className={styles.signupPrompt}>
-              Don't have an account?{' '}
-              <Link href="/signup" className={styles.signupLink}>
-                Sign up
-              </Link>
-            </p>
           </div>
         </div>
       </main>

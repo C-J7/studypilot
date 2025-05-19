@@ -15,4 +15,14 @@ export const setAuthToken = (token) => {
   }
 };
 
+//For Syllabus search
+export const searchSyllabi = (params) => api.get('/api/syllabus/search', { params });
+
+//Study plan progress
+export const getUserProgressStats = (userId) => api.get(`/api/study-plan/user/${userId}/progress`);
+
+//Marks session as complete
+export const completeSession = (studyPlanId, sessionId) =>
+  api.put(`/api/study-plan/${studyPlanId}/session/${sessionId}/complete`);
+
 export default api;

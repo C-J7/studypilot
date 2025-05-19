@@ -46,10 +46,10 @@
   color: var(--primary);
 }
 
-.loginButton {
+.loginButton, .searchBar button {
   padding: 0.5rem 1.5rem;
   border-radius: 0.5rem;
-  background: var(--primary);
+  background: rgb(74, 126, 238);
   color: white;
   border: none;
   cursor: pointer;
@@ -59,8 +59,8 @@
 .loginButton {
   transition: background-color 0.3s ease, transform 0.3s ease, -webkit-text-fill-color 0.3s ease;
 }
-.loginButton:hover {
-  background: rgb(79, 128, 234);
+.loginButton:hover, .searchBar button:hover:not(:disabled) {
+  background: #3b82f6;
   -webkit-text-fill-color: aliceblue;
   transform: scale(1.05);
 }
@@ -235,4 +235,4 @@
   .footerLinks {
     gap: 2rem;
   }
-} 
+}

@@ -1,11 +1,10 @@
-// src/app/dashboard/planner/page.jsx
 'use client'
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import api from '@/app/api/services/api'
+import api, { completeSession } from '@/app/api/services/api'
 import { SkeletonLoader } from '@/components/SkeletonLoader'
 import styles from './planner.module.css'
 import { useAuth } from '@/contexts/AuthContext' 
@@ -60,6 +59,15 @@ const PlannerPage = () => {
     }
   }
 
+  const handleCompleteSession = async (studyPlanId, sessionId) => {
+    try {
+      await completeSession(studyPlanId, sessionId)
+      //Optionally refetch events or update UI
+    } catch (error) {
+      console.error('Failed to mark session complete:', error)
+    }
+  }
+
   return (
     <div className={styles.container}>
       {loading ? (
@@ -109,6 +117,12 @@ const PlannerPage = () => {
                 >
                   Close
                 </button>
+                <button
+                  onClick={() => handleCompleteSession(selectedPlan.id, selectedPlan.sessionId)}
+                  className={styles.completeButton}
+                >
+                  Mark Session Complete
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
@@ -118,4 +132,4 @@ const PlannerPage = () => {
   )
 }
 
-export default PlannerPage
+export default PlannerPage;

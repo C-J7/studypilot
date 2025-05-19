@@ -75,6 +75,26 @@
   font-size: 0.875rem;
 }
 
+.success {
+  background: #d1fae5;
+  color: #047857;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.info {
+  background: #e0e7ff;
+  color: #3730a3;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
 .form {
   display: flex;
   flex-direction: column;
@@ -241,4 +261,4 @@
   .authCard h1 {
     font-size: 1.75rem;
   }
-} 
+}

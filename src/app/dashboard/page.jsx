@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { SkeletonLoader } from '@/components/SkeletonLoader'
-import api from '../api/services/api'
+import api, { getUserProgressStats } from '../api/services/api'
 import styles from './dashboard.module.css'
 import { useAuth } from '@/contexts/AuthContext'
 import WelcomeCard from '@/components/WelcomeCard' 
-import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,14 +15,23 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import BackendTest from '../api/backendTest'
+import { useDashboard } from '@/contexts/DashboardContext';
+import SearchBar from '@/components/SearchBar';
+import BaseCard from '@/components/BaseCard';
+import RemindersCard from '@/components/RemindersCard';
+import StudyChartCard from '@/components/StudyChartCard';
+import TopCoursesCard from '@/components/TopCoursesCard';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function Dashboard() {
-  const { user } = useAuth() 
-  const [stats, setStats] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [overallProgress, setOverallProgress] = useState(0) 
+  const { user } = useAuth();
+  const { progress, planner, syllabus, reminders, loading, error, refetch } = useDashboard();
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState(null);
+
   const chartData = {
     labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     datasets: [
@@ -48,44 +56,35 @@ export default function Dashboard() {
     },
   };
 
+  // Search syllabus by faculty/department
+  const handleSearch = async (faculty, department, query) => {
+    setSearchLoading(true);
+    setSearchError(null);
+    try {
+      // Query syllabus table for user's faculty/department
+      const { data, error } = await supabase
+        .from('syllabus')
+        .select('*')
+        .eq('faculty', faculty)
+        .eq('department', department)
+        .ilike('title', `%${query}%`);
+      if (error) throw error;
+      setSearchResults(data || []);
+    } catch (err) {
+      setSearchError('Failed to search syllabus.');
+    } finally {
+      setSearchLoading(false);
+    }
+  };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user && user.id) {
-        setLoading(true); 
-        try {
-          
-          const mockProgress = Math.floor(Math.random() * 75) + 25; // Random progress between 25-100%
-          setOverallProgress(mockProgress);
-
-          const userId = user.id;
-          const [syllabiRes, plansRes] = await Promise.all([
-            api.get(`/api/syllabus/user/${userId}`),
-            api.get(`/api/study-plan/user/${userId}`)
-          ]);
-          setStats({
-            courses: syllabiRes.data.length,
-            currentStreak: 5, //Placeholder
-            longestStreak: 7, //Placeholder
-            studyHours: 14,   //Placeholder
-            upcomingSessions: plansRes.data.flatMap(plan => plan.sessions).length
-          });
-        } catch (error) {
-          console.error('Dashboard error:', error);
-          setStats(null); 
-          setOverallProgress(0); //Reset progress on error
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setLoading(false); 
-        setStats(null);   
-        setOverallProgress(0);
-      }
-    };
-
-    fetchData();
-  }, [user]);
+  //Compute dashboard stats from progress and planner data
+  const stats = {
+    courses: syllabus ? syllabus.length : 0,
+    currentStreak: progress?.[0]?.current_streak || 0,
+    longestStreak: progress?.[0]?.longest_streak || 0,
+    studyHours: progress?.[0]?.weekly_hours || 0,
+    upcomingSessions: planner ? planner.length : 0,
+  };
 
   //Handle loading state
   if (loading) {
@@ -107,64 +106,46 @@ export default function Dashboard() {
       </div>
     );
   }
+  if (error) {
+    return <div className="dataMessage">{error}</div>;
+  }
 
-  
   const userNameForWelcomeCard = user?.user_metadata?.full_name || user?.email || 'User';
 
+  // Quick stats
+  const quickStats = [
+    { label: 'Courses', value: stats.courses },
+    { label: 'Current Streak', value: `${stats.currentStreak} days` },
+    { label: 'Longest Streak', value: `${stats.longestStreak} days` },
+  ];
+
   return (
-    <div className={styles.container}>
-      <WelcomeCard userName={userNameForWelcomeCard} progress={overallProgress} />
-      
-      {/* Conditional rendering for the rest of the dashboard based on stats availability */}
-      {!stats ? (
-        <p className={styles.dataMessage}>Could not load detailed dashboard statistics. Please try refreshing.</p>
+    <div className={styles.dashboardGrid}>
+      <WelcomeCard userName={userNameForWelcomeCard} progress={progress?.[0]?.overall_progress || 0} />
+      <SearchBar onSearch={handleSearch} loading={searchLoading} error={searchError} results={searchResults} />
+      {/*Conditional rendering for the rest of the dashboard based on stats availability from backend*/}
+      {stats.courses === 0 && stats.studyHours === 0 && stats.upcomingSessions === 0 ? (
+        <p className={styles.dataMessage}>Could not load detailed dashboard statistics. Please try refreshing. 
+        <BackendTest/>
+        </p>
       ) : (
         <>
-          <div className={styles.statsGrid}>
-              <>
-                <div className={styles.statCard}>
-                  <h4>Total Courses</h4>
-                  <p>{stats.courses}</p>
-                </div>
-                <div className={styles.statCard}>
-                  <h4>Current Streak</h4>
-                  <p>{stats.currentStreak} days</p>
-                </div>
-                <div className={styles.statCard}>
-                  <h4>Longest Streak</h4>
-                  <p>{stats.longestStreak} days</p>
-                </div>
-                <div className={styles.statCard}>
-                  <h4>Study Hours</h4>
-                  <p>{stats.studyHours}h</p>
-                </div>
-              </>
-          </div>
-
-          <div className={styles.chartSection}>
-            <h4>Weekly Study Time</h4>
-            <div className={styles.chartContainer}>
-              <div className={styles.chartContainer}>
-          <Bar data={chartData} options={chartOptions} />
-            </div>
-            </div>
-          </div>
-
-          <div className={styles.upcomingSessions}>
-            <h4>Upcoming Sessions</h4>
-            {stats.upcomingSessions > 0 ? (
-              <div className={styles.sessionList}>
-                {[...Array(stats.upcomingSessions)].map((_, i) => (
-                  <div key={i} className={styles.sessionItem}>
-                    <span>CSC 21{i} - Session {i + 1}</span>
-                    <span>Tomorrow 2:00 PM</span>
-                  </div>
-                ))}
+          <BaseCard className={styles.quickStatsCard}>
+            <h3>Quick Stats</h3>
+            {quickStats.map(stat => (
+              <div key={stat.label} className={styles.statRow}>
+                <span>{stat.label}</span>
+                <span>{stat.value}</span>
+                <div className={styles.statBar}><div className={styles.statBarFill} style={{width: stat.label === 'Courses' ? `${(stats.courses/5)*100}%` : stat.label === 'Current Streak' ? `${(stats.currentStreak/30)*100}%` : `${(stats.longestStreak/30)*100}%`}} /></div>
               </div>
-            ) : (
-              <p>No upcoming sessions. Generate a study plan!</p>
-            )}
-          </div>
+            ))}
+          </BaseCard>
+          <BaseCard className={styles.chartCard}>
+            <h3>Time Spent Studying</h3>
+            <StudyChartCard data={chartData} options={chartOptions} />
+          </BaseCard>
+          <TopCoursesCard courses={syllabus} progress={progress} />
+          <RemindersCard reminders={reminders} />
         </>
       )}
     </div>

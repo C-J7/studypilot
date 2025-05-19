@@ -1,14 +1,41 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState, Suspense, lazy } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import { Home, UploadFile, CalendarToday, BarChart, Logout } from '@mui/icons-material'
 import { useAuth } from '@/contexts/AuthContext'
+import { useDashboard } from '@/contexts/DashboardContext'
 import styles from './dashboard.module.css'
+import clsx from 'clsx'
+import SkeletonLoader from '@/components/SkeletonLoader'
+
+//Lazy load dashboard pages for performance
+const DashboardHome = lazy(() => import('./page'))
+const SyllabusPage = lazy(() => import('./upload/page'))
+const StudyPlannerPage = lazy(() => import('./study-planner/page'))
+const ProgressPage = lazy(() => import('./progress/page'))
+
+//Helper to map route to component
+const routeToComponent = (pathname) => {
+  if (pathname === '/dashboard') return <DashboardHome />
+  if (pathname === '/dashboard/upload') return <SyllabusPage />
+  if (pathname === '/dashboard/study-planner') return <StudyPlannerPage />
+  if (pathname === '/dashboard/progress') return <ProgressPage />
+  return <DashboardHome />
+}
 
 export default function DashboardLayout({ children }) {
-  const { user, signOut, loading } = useAuth() 
+  const { user, signOut, loading } = useAuth()
+  const { loading: dashboardLoading, error: dashboardError } = useDashboard()
   const router = useRouter()
+  const pathname = usePathname()
+
+  const [activePath, setActivePath] = useState('/dashboard')
+  const [sidebarVisible, setSidebarVisible] = useState(true)
+
+  useEffect(() => {
+    setActivePath(pathname)
+  }, [pathname])
 
   useEffect(() => {
     if (!loading && !user) {
@@ -18,81 +45,139 @@ export default function DashboardLayout({ children }) {
 
   const handleLogout = async () => {
     try {
-      await signOut() // Use signOut from AuthContext
-      router.push('/login') 
+      await signOut()
+      router.push('/login')
     } catch (error) {
       console.error('Logout error:', error)
-      
     }
   }
 
-  if (loading || !user) { 
+  if (loading || !user || dashboardLoading) {
     return (
-      <div className={styles.pageLoader}> 
-        Loading StudyPilot...
+      <div className={styles.pageLoader}>
+        <SkeletonLoader type="card" />
+        <span style={{marginLeft: 16}}>Loading Dashboard...</span>
       </div>
-    );
+    )
+  }
+  if (dashboardError) {
+    return <div className={styles.dataMessage}>{dashboardError}</div>
   }
 
-  // Extract user display name parts
-  const fullName = user?.user_metadata?.full_name;
-  const userEmail = user?.email;
-  let displayInitial = 'U';
-  let displayName = 'User';
-  let displayDepartment = user?.user_metadata?.department || 'N/A';
+  const fullName = user?.user_metadata?.full_name
+  const userEmail = user?.email
+  let displayInitial = 'U'
+  let displayName = 'User'
+  let displayDepartment = user?.user_metadata?.department || 'N/A'
 
   if (fullName) {
-    displayName = fullName;
-    displayInitial = fullName[0].toUpperCase();
+    displayName = fullName
+    displayInitial = fullName[0].toUpperCase()
   } else if (userEmail) {
-    displayName = userEmail;
-    displayInitial = userEmail[0].toUpperCase();
+    displayName = userEmail
+    displayInitial = userEmail[0].toUpperCase()
   }
+
+  //Sidebar navigation items
+  const navItems = [
+    {
+      label: 'Dashboard',
+      icon: <Home className={styles.icon} />,
+      href: '/dashboard'
+    },
+    {
+      label: 'Syllabus',
+      icon: <UploadFile className={styles.icon} />,
+      href: '/dashboard/upload'
+    },
+    {
+      label: 'Study Planner',
+      icon: <CalendarToday className={styles.icon} />,
+      href: '/dashboard/study-planner'
+    },
+    {
+      label: 'Progress',
+      icon: <BarChart className={styles.icon} />,
+      href: '/dashboard/progress'
+    }
+  ]
+
+  //Handle navigation without reload
+  const handleNav = (href) => (e) => {
+    e.preventDefault()
+    if (href !== pathname) {
+      router.push(href)
+    }
+  }
+
+  // Keyboard accessibility for logout
+  const handleLogoutKey = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      handleLogout()
+    }
+  }
+
+  // Mobile sidebar overlay
+  const Sidebar = (
+    <aside
+      className={clsx(
+        styles.sidebar,
+        sidebarVisible && styles.sidebarVisible
+      )}
+      aria-label="Sidebar"
+    >
+      <div className={styles.logoctn}>
+        <img src="/SPlogo.png" alt="Logo" className={styles.logoimg} />
+        <h2 className={styles.logo}>StudyPilot</h2>
+      </div>
+      {/* Profile Section */}
+      <div className={styles.profileSection}>
+        <div className={styles.avatar}>{displayInitial}</div>
+        <div className={styles.userMeta}>
+          <span className={styles.userName}>{displayName}</span>
+          <span className={styles.userDepartment}>{displayDepartment}</span>
+        </div>
+      </div>
+      <nav className={styles.nav}>
+        {navItems.map((item) => (
+          <a
+            key={item.href}
+            href={item.href}
+            className={clsx(
+              styles.navitem,
+              activePath === item.href && styles.active
+            )}
+            onClick={handleNav(item.href)}
+          >
+            {item.icon}
+            <span>{item.label}</span>
+          </a>
+        ))}
+        <div
+          className={clsx(styles.navitem, styles.logoutctn)}
+          onClick={handleLogout}
+          onKeyDown={handleLogoutKey}
+          tabIndex={0}
+          role="button"
+          aria-label="Logout"
+        >
+          <Logout className={styles.icon} />
+          <span>Logout</span>
+        </div>
+      </nav>
+    </aside>
+  )
 
   return (
     <div className={styles.parentctn}>
-      <div className={styles.sidebar}>
-        <div className={styles.logoctn}>
-        <h2 className={styles.logo}>StudyPilot</h2> {/* Added class for logo styling */}
-        </div>
-
-        {/* Profile Section */}
-        <div className={styles.profile}>
-          <div className={styles.profileimgctn}>
-            {displayInitial}
-          </div>
-          <div className={styles.userinfo}>
-            <span className={styles.userName}>{displayName}</span>
-            <span className={styles.userDepartment}>{displayDepartment}</span>
-          </div>
-        </div>
-
-        <nav className={styles.nav}>
-          <a href="/dashboard" className={`${styles.navitem} ${router.pathname === '/dashboard' ? styles.active : ''}`}>
-            <Home className={styles.icon} />
-            <span>Dashboard</span>
-          </a>
-          <a href="/dashboard/upload" className={`${styles.navitem} ${router.pathname === '/dashboard/upload' ? styles.active : ''}`}>
-            <UploadFile className={styles.icon} />
-            <span>Upload Syllabus</span>
-          </a>
-          <a href="/dashboard/study-planner" className={`${styles.navitem} ${router.pathname === '/dashboard/study-planner' ? styles.active : ''}`}>
-            <CalendarToday className={styles.icon} />
-            <span>Study Planner</span>
-          </a>
-          <a href="/dashboard/progress" className={`${styles.navitem} ${router.pathname === '/dashboard/progress' ? styles.active : ''}`}>
-            <BarChart className={styles.icon} />
-            <span>Progress</span>
-          </a>
-          <div className={`${styles.navitem} ${styles.logoutctn}`} onClick={handleLogout}> {/* Applied navitem style for consistency */}
-            <Logout className={styles.icon} />
-            <span>Logout</span>
-          </div>
-        </nav>
-      </div>
-
+      {/* Sidebar for desktop & mobile */}
+      {Sidebar}
       <main className={styles.main}>
-        {children}
+        <Suspense fallback={
+          <div className={styles.pageLoader}>Loading...</div>
+        }>
+          {routeToComponent(activePath)}
+        </Suspense>
       </main>
     </div>
   )

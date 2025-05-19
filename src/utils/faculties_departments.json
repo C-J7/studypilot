@@ -1,0 +1,156 @@
+[
+  {
+    "university": "University of Lagos",
+    "faculties": [
+      {
+        "name": "Faculty of Science",
+        "departments": [
+          "Computer Science",
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+          "Biological Sciences",
+          "GeoSciences",
+          "Fisheries",
+          "Marine Biology",
+          "Microbiology",
+          "Botany",
+          "Zoology",
+          "Biochemistry",
+          "Environmental Biology",
+          "Applied Mathematics",
+          "Statistics",
+          "Data Science",
+          "Cyber Security"
+
+        ]
+      },
+      {
+        "name": "Faculty of Engineering",
+        "departments": [
+          "Civil Engineering",
+          "Mechanical Engineering",
+          "Electrical/Electronics Engineering",
+          "Chemical Engineering",
+          "Systems Engineering",
+          "Surveying and Geoinformatics",
+          "Petroleum Engineering",
+          "Metallurgical and Materials Engineering",
+          "Computer Engineering",
+          "Biomedical Engineering",
+          "Environmental Engineering",
+          "Systems Engineering"
+        ]
+      },
+      {
+        "name": "Faculty of Arts",
+        "departments": [
+          "English",
+          "Philosophy",
+          "Linguistics",
+          "History and Strategic Studies",
+          "Creative Arts",
+          "Yoruba",
+          "African and Asian Studies",
+          "European Languages and Integration Studies"
+
+        ]
+      },
+      {
+        "name": "Faculty of Social Sciences",
+        "departments": [
+          "Economics",
+          "Psychology",
+          "Political Science",
+          "Sociology",
+          "Geography",
+          "Social Work",
+          "Mass Communication"
+        ]
+      },
+      {
+        "name": "Faculty of Management Sciences",
+        "departments": [
+          "Accounting",
+          "Business Administration",
+          "Marketing",
+          "Banking and Finance",
+          "Management",
+          "Entrepreneurship",
+          "Insurance and Risk Management",
+          "Actuarial Science"
+        ]
+      },
+      {
+        "name": "Faculty of Law",
+        "departments": [
+          "Law",
+          "Jurisprudence and International Law",
+          "Private Law",
+          "Public Law",
+          "Commercial Law",
+          "Property Law",
+          "Criminal Law"
+        ]
+      },
+      {
+        "name": "Faculty of Pharmacy",
+        "departments": [
+          "Pharmacy",
+          "Pharmaceutical Chemistry",
+          "Pharmaceutics"
+        ]
+      },
+      {
+        "name": "Faculty of Education",
+        "departments": [
+          "Adult Education",
+          "Educational Administration",
+          "Guidance and Counselling",
+          "Christian Religious Studies",
+          "Islamic Studies",
+          "Maths Education",
+          "Biology Education",
+          "Physics Education",
+          "Chemistry Education",
+          "Early Childhood Education",
+          "Physical and Health Education",
+          "Educational Technology"
+        ]
+      },
+      {
+        "name": "Faculty of Environmental Sciences",
+        "departments": [
+          "Architecture",
+          "Estate Management",
+          "Urban and Regional Planning",
+          "Quantity Surveying",
+          "Surveying and Geoinformatics",
+          "Environmental Design and Management"
+        ]
+      },
+      {
+        "name": "Faculty of Basic Medical Sciences",
+        "departments": [
+          "Anatomy",
+          "Physiology",
+          "Biochemistry"
+        ]
+      },
+      {
+        "name": "College of Medicine",
+        "departments": [
+          "Medicine and Surgery",
+          "Radiography",
+          "Physiotherapy",
+          "Medical Laboratory Science",
+          "Dentistry",
+          "Nursing",
+          "Obstetrics and Gynaecology",
+          "Paediatrics",
+          "Public Health"
+        ]
+      }
+    ]
+  }
+]

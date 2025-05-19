@@ -126,4 +126,4 @@ const ProgressPage = () => {
   )
 }
 
-export default ProgressPage
+export default ProgressPage;

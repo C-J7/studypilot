@@ -1,50 +1,69 @@
-// src/components/SearchBar.jsx
-'use client'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import api from '@/services/api'
+import { searchSyllabi } from '@/app/api/services/api'
+import CustomDropdown from '@/components/CustomDropdown';
+import facultiesDepartments from '@/utils/faculties_departments.json';
+import styles from '@/styles/SearchBar.module.css';
 
-const SearchBar = ({ user, onSearch }) => {
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState([])
-  const [loading, setLoading] = useState(false)
+const SearchBar = ({ onSearch, loading, error, results }) => {
+  const [faculty, setFaculty] = useState('');
+  const [department, setDepartment] = useState('');
+  const [query, setQuery] = useState('');
 
-  useEffect(() => {
-    const search = async () => {
-      if (query.length < 3) return
-      
-      setLoading(true)
-      try {
-        const response = await api.get('/api/syllabus', {
-          params: {
-            faculty: user.faculty,
-            department: user.department,
-            search: query
-          }
-        })
-        setResults(response.data)
-        onSearch(response.data)
-      } catch (error) {
-        console.error('Search error:', error)
-      } finally {
-        setLoading(false)
-      }
+  const handleFacultyChange = (value) => {
+    setFaculty(value);
+    setDepartment('');
+  };
+
+  const handleDepartmentChange = (value) => {
+    setDepartment(value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (faculty && department) {
+      onSearch(faculty, department, query);
     }
+  };
 
-    const debounce = setTimeout(() => search(), 300)
-    return () => clearTimeout(debounce)
-  }, [query, user, onSearch])
+  const facultyOptions = facultiesDepartments.flatMap(u => u.faculties.map(f => f.name));
+  const departmentOptions = faculty
+    ? facultiesDepartments.flatMap(u => u.faculties.filter(f => f.name === faculty).flatMap(f => f.departments))
+    : [];
 
   return (
-    <motion.div layout className="search-container">
+    <form className={styles.searchBar} onSubmit={handleSubmit}>
+      <CustomDropdown
+        label="Faculty"
+        options={facultyOptions}
+        value={faculty}
+        onChange={handleFacultyChange}
+        placeholder="Select Faculty"
+      />
+      <CustomDropdown
+        label="Department"
+        options={departmentOptions}
+        value={department}
+        onChange={handleDepartmentChange}
+        placeholder="Select Department"
+      />
       <input
         type="text"
+        placeholder="Search syllabus..."
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search syllabi..."
-        className="search-input"
+        onChange={e => setQuery(e.target.value)}
       />
-      {loading && <div className="loading-spinner" />}
-    </motion.div>
-  )
+      <button type="submit" disabled={loading}>{loading ? 'Searching...' : 'Search'}</button>
+      {error && <div className={styles.error}>{error}</div>}
+      {results && results.length > 0 && (
+        <div className={styles.results}>
+          {results.map(r => (
+            <div key={r.id} className={styles.resultItem}>{r.title}</div>
+          ))}
+        </div>
+      )}
+    </form>
+  );
 }
+
+export default SearchBar
