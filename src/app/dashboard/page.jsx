@@ -1,8 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { SkeletonLoader } from '@/components/SkeletonLoader'
-import api, { getUserProgressStats } from '../api/services/api'
 import styles from './dashboard.module.css'
 import { useAuth } from '@/contexts/AuthContext'
 import WelcomeCard from '@/components/WelcomeCard' 
@@ -15,7 +14,6 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import BackendTest from '../api/backendTest'
 import { useDashboard } from '@/contexts/DashboardContext';
 import SearchBar from '@/components/SearchBar';
 import BaseCard from '@/components/BaseCard';
