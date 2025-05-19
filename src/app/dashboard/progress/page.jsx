@@ -1,4 +1,5 @@
 'use client'
+
 import { useEffect, useState } from 'react'
 import { Bar, Line } from 'react-chartjs-2'
 import { motion } from 'framer-motion'

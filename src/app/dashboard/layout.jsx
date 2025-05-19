@@ -31,7 +31,7 @@ export default function DashboardLayout({ children }) {
   const pathname = usePathname()
 
   const [activePath, setActivePath] = useState('/dashboard')
-  const [sidebarVisible, setSidebarVisible] = useState(true)
+ 
 
   useEffect(() => {
     setActivePath(pathname)
@@ -81,12 +81,12 @@ export default function DashboardLayout({ children }) {
   //Sidebar navigation items
   const navItems = [
     {
-      label: 'Dashboard',
+      label: 'Home',
       icon: <Home className={styles.icon} />,
       href: '/dashboard'
     },
     {
-      label: 'Syllabus',
+      label: 'Find Syllabus',
       icon: <UploadFile className={styles.icon} />,
       href: '/dashboard/upload'
     },
@@ -110,20 +110,17 @@ export default function DashboardLayout({ children }) {
     }
   }
 
-  // Keyboard accessibility for logout
+  //Keyboard accessibility for logout
   const handleLogoutKey = (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       handleLogout()
     }
   }
 
-  // Mobile sidebar overlay
+  // Sidebar always visible
   const Sidebar = (
     <aside
-      className={clsx(
-        styles.sidebar,
-        sidebarVisible && styles.sidebarVisible
-      )}
+      className={styles.sidebar}
       aria-label="Sidebar"
     >
       <div className={styles.logoctn}>
@@ -168,9 +165,9 @@ export default function DashboardLayout({ children }) {
     </aside>
   )
 
+  
   return (
     <div className={styles.parentctn}>
-      {/* Sidebar for desktop & mobile */}
       {Sidebar}
       <main className={styles.main}>
         <Suspense fallback={
