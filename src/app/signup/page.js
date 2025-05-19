@@ -29,7 +29,7 @@ export default function Signup() {
   const router = useRouter()
   const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-  // Extract faculty and department options
+  //Extract faculty and department options
   const facultyOptions = facultiesDepartments.flatMap(u => u.faculties.map(f => f.name));
   const departmentOptions = formData.faculty
     ? facultiesDepartments.flatMap(u => u.faculties.filter(f => f.name === formData.faculty).flatMap(f => f.departments))
