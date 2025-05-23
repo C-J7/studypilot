@@ -18,6 +18,7 @@ export default function StudyPlanner({ user }) {
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [plan, setPlan] = useState(null);
+  const [showForm, setShowForm] = useState(true);
 
   //Auto-select from user profile if available
   useEffect(() => {
@@ -49,96 +50,114 @@ export default function StudyPlanner({ user }) {
     try {
       const res = await generateStudyPlan(data);
       setPlan(res.data);
+      setShowForm(false);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleShowForm = () => {
+    setShowForm(true);
+    setPlan(null);
+  };
+
   return (
     <div className={styles.container}>
-      <form className={styles.form} onSubmit={handleSubmit}>
-        {/* Time Period */}
-        <div className={styles.section}>
-          <label>Start Date</label>
-          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required />
-          <label>End Date</label>
-          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} required />
-        </div>
-        {/* Study Preferences */}
-        <div className={styles.section}>
-          <label>Hours Per Day</label>
-          <CustomDropdown
-            options={[1,2,3,4,5,6]}
-            value={hoursPerDay}
-            onChange={setHoursPerDay}
-            placeholder="Select hours"
-            label=""
-          />
-          <label>Preferred Time</label>
-          <CustomDropdown
-            options={["morning", "afternoon", "evening"]}
-            value={preferredTime}
-            onChange={setPreferredTime}
-            placeholder="Select time"
-            label=""
-          />
-        </div>
-        {/*Course Selection */}
-        <div className={styles.section}>
-          <label>Faculty</label>
-          <CustomDropdown
-            options={facultiesData[0].faculties.map(f => f.name)}
-            value={faculty}
-            onChange={val => {
-              setFaculty(val);
-              setDepartment('');
-            }}
-            placeholder="Select faculty"
-            label=""
-          />
-          <label>Department</label>
-          <CustomDropdown
-            options={departments}
-            value={department}
-            onChange={setDepartment}
-            placeholder="Select department"
-            label=""
-          />
-          <label>Level</label>
-          <CustomDropdown
-            options={[100,200,300,400,500].map(lvl => `${lvl} Level`)}
-            value={level ? `${level} Level` : ''}
-            onChange={val => setLevel(val.replace(' Level',''))}
-            placeholder="Select level"
-            label=""
-          />
-        </div>
-        {/*Syllabus ID (could be a dropdown, might later remove or use the title instead.*/}
-        <div className={styles.section}>
-          <label>Syllabus</label>
-          <input type="text" value={syllabusId} onChange={e => setSyllabusId(e.target.value)} placeholder="Enter Syllabus ID" required />
-        </div>
-        <button className={styles.button} type="submit" disabled={loading}>
-          {loading ? 'Generating...' : 'Generate Study Plan'}
-        </button>
-      </form>
-      {plan && (
-        <div className={styles.planPreview}>
-          <h3>Generated Plan</h3>
-          <div className={styles.planList}>
-            {plan.sessions && plan.sessions.map(session => (
-              <div key={session.id} className={styles.planCard}>
-                <div className={styles.planTopic}>{session.topic}</div>
-                <div className={styles.planTime}>
-                  {new Date(session.startTime).toLocaleString()} - {new Date(session.endTime).toLocaleString()}
-                </div>
-                <div className={styles.planStatus}>
-                  {session.completed ? <span className={styles.completed}>Completed</span> : <span className={styles.pending}>Pending</span>}
-                </div>
-              </div>
-            ))}
+      {showForm ? (
+        <form className={styles.form} onSubmit={handleSubmit}>
+          {/*Time Period */}
+          <div className={styles.section}>
+            <label>Start Date</label>
+            <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required />
+            <label>End Date</label>
+            <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} required />
           </div>
-        </div>
+          {/*Study Preferences */}
+          <div className={styles.section}>
+            <label>Hours Per Day</label>
+            <CustomDropdown
+              options={[1,2,3,4,5,6]}
+              value={hoursPerDay}
+              onChange={setHoursPerDay}
+              placeholder="Select hours"
+              label=""
+            />
+            <label>Preferred Time</label>
+            <CustomDropdown
+              options={["morning", "afternoon", "evening"]}
+              value={preferredTime}
+              onChange={setPreferredTime}
+              placeholder="Select time"
+              label=""
+            />
+          </div>
+          {/*Course Selection */}
+          <div className={styles.section}>
+            <label>Faculty</label>
+            <CustomDropdown
+              options={facultiesData[0].faculties.map(f => f.name)}
+              value={faculty}
+              onChange={val => {
+                setFaculty(val);
+                setDepartment('');
+              }}
+              placeholder="Select faculty"
+              label=""
+            />
+            <label>Department</label>
+            <CustomDropdown
+              options={departments}
+              value={department}
+              onChange={setDepartment}
+              placeholder="Select department"
+              label=""
+            />
+            <label>Level</label>
+            <CustomDropdown
+              options={[100,200,300,400,500].map(lvl => `${lvl} Level`)}
+              value={level ? `${level} Level` : ''}
+              onChange={val => setLevel(val.replace(' Level',''))}
+              placeholder="Select level"
+              label=""
+            />
+          </div>
+          {/*Syllabus ID (could be a dropdown, might later remove or use the title instead.*/}
+          <div className={styles.section}>
+            <label>Syllabus</label>
+            <input type="text" value={syllabusId} onChange={e => setSyllabusId(e.target.value)} placeholder="Enter Syllabus ID" required />
+          </div>
+          <button className={styles.button} type="submit" disabled={loading}>
+            {loading ? 'Generating...' : 'Generate Study Plan'}
+          </button>
+        </form>
+      ) : (
+        plan && (
+          <div className={styles.planPreview}>
+            <h3>Generated Plan</h3>
+            <div className={styles.planList}>
+              {plan.sessions && plan.sessions.map(session => (
+                <div key={session.id} className={styles.planCard}>
+                  <div className={styles.planTopic}>{session.topic}</div>
+                  <div className={styles.planTime}>
+                    {new Date(session.startTime).toLocaleString()} - {new Date(session.endTime).toLocaleString()}
+                  </div>
+                  <div className={styles.planStatus}>
+                    {session.completed ? <span className={styles.completed}>Completed</span> : <span className={styles.pending}>Pending</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button
+              className={styles.button}
+              style={{ marginTop: '2rem', position: 'relative' }}
+              onClick={handleShowForm}
+              title="Generate a new studyplan"
+              type="button"
+            >
+              Generate studyplan
+            </button>
+          </div>
+        )
       )}
     </div>
   );
