@@ -138,12 +138,10 @@ export default function StudyPlanner({ user }) {
               label=""
             />
           </div>
-          {/*Syllabus ID (could be a dropdown, might later remove or use the title instead.*/}
-          {/* <div className={styles.section}>
+         <div className={styles.section}>
             <label>Syllabus</label>
-            {/* Use 1 for now since demo */}
-            {/* <input type="text" value={syllabusId} onChange={e => setSyllabusId(e.target.value)} placeholder="Enter Syllabus ID" required /> */}
-          {/* </div> */} 
+           <input type="text" value={syllabusId} onChange={e => setSyllabusId(e.target.value)} placeholder="Enter Syllabus ID" required />
+         </div> 
           <button className={styles.button} type="submit" disabled={loading}>
             {loading ? 'Generating...' : 'Generate Study Plan'}
           </button>
