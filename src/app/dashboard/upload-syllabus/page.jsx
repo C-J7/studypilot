@@ -72,7 +72,60 @@ export default function UploadSyllabus({ user }) {
           placeholder="Select semester"
         />
         <label>PDF File</label>
-        <input type="file" accept="application/pdf" onChange={e => setFile(e.target.files[0])} required />
+        <div
+          className={`${styles.dropzone} ${file ? styles.hasFile : ''}`}
+          onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
+          onDrop={e => {
+            e.preventDefault();
+            e.stopPropagation();
+            const droppedFile = e.dataTransfer.files[0];
+            if (droppedFile && droppedFile.type === 'application/pdf') {
+              setFile(droppedFile);
+            } else {
+              alert('Please select a PDF file.');
+            }
+          }}
+          onClick={() => document.getElementById('pdf-upload-input').click()}
+          tabIndex={0}
+          role="button"
+          style={{ cursor: 'pointer' }}
+        >
+          <input
+            id="pdf-upload-input"
+            type="file"
+            accept="application/pdf"
+            style={{ display: 'none' }}
+            onChange={e => {
+              const selected = e.target.files[0];
+              if (selected && selected.type === 'application/pdf') {
+                setFile(selected);
+              } else {
+                alert('Please select a PDF file.');
+              }
+            }}
+            required
+          />
+          <div className={styles.uploadContent}>
+            <svg
+              className={styles.uploadIcon}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              width="48"
+              height="48"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <p>
+              {file
+                ? `Selected: ${file.name}`
+                : 'Drop your files here or Browse'}
+            </p>
+            <span className={styles.supportText}>Supports PDF files only</span>
+          </div>
+        </div>
         <button className={styles.button} type="submit" disabled={loading}>
           {loading ? 'Uploading...' : 'Upload Syllabus'}
         </button>

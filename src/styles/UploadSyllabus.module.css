@@ -41,3 +41,46 @@
   font-weight: bold;
   margin-top: 1rem;
 }
+
+
+.dropzone {
+  border: 2px dashed #cfd8dc;
+  border-radius: 16px;
+  background: #f5faff;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.2s;
+  cursor: pointer;
+  text-align: center;
+  position: relative;
+}
+
+.dropzone:focus,
+.dropzone:hover {
+  border-color: #1976d2;
+}
+
+.uploadContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.uploadIcon {
+  color: #b0bec5;
+  margin-bottom: 12px;
+}
+
+.supportText {
+  color: #90a4ae;
+  font-size: 0.95em;
+  margin-top: 4px;
+}
+
+.hasFile {
+  border-color: #43a047;
+  background: #e8f5e9;
+}

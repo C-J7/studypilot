@@ -1,48 +1,24 @@
-//Reminders Card Component: List of reminders 
-import styles from "../styles/RemindersCard.module.css";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import SkeletonLoader from "./SkeletonLoader";
+import styles from '@/styles/RemindersCard.module.css';
 
-export default function RemindersCard() {
-  const [reminders, setReminders] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchReminders = async () => {
-      try {
-        const response = await axios.get("https://studypilot-backend.onrender.com/api/Reminders");
-        const formattedReminders = response.data.map(reminder => ({
-          id: reminder.id,
-          text: reminder.text,
-          dueDate: reminder.dueDate,
-        }));
-        setReminders(formattedReminders);
-      } catch (error) {
-        console.error("Error fetching reminders:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchReminders();
-  }, []);
-
-  if (isLoading) {
-    return <SkeletonLoader/>
-  }
-
-  return (
-    <div className={styles.remindersCard}>
-      <h3>Reminders</h3>
-      <ul className={styles.remindersList}>
-        {reminders.map((reminder) => (
-          <li key={reminder.id} className={styles.reminderItem}>
-            <div className={styles.reminderText}>{reminder.text}</div>
-            <div className={styles.reminderDueDate}>Due: {reminder.dueDate}</div>
-          </li>
-        ))}
-      </ul>
+const RemindersCard = ({ reminders = [] }) => (
+  <div className={styles.remindersCard}>
+    <h3>Reminders</h3>
+    <div className={styles.reminderList}>
+      {reminders.length === 0 ? (
+        <div className={styles.empty}>No reminders.</div>
+      ) : (
+        reminders.map((rem, idx) => (
+          <div key={rem.id || idx} className={styles.reminderItem}>
+            <div>
+              <span className={styles.reminderTitle}>{rem.title}</span>
+              <span className={styles.reminderSubtitle}>{rem.subtitle}</span>
+            </div>
+            <span className={styles.reminderTime}>{rem.time}</span>
+          </div>
+        ))
+      )}
     </div>
-  );
-}
+  </div>
+);
+
+export default RemindersCard;

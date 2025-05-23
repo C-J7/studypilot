@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import styles from './PDFUploader.module.css'
+import styles from '../styles/PDFUploader.module.css'
 
-export default function PDFUploader() {
+export default function PDFUploader({ onFileSelect }) {
   const [uploading, setUploading] = useState(false)
   const [dragActive, setDragActive] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
@@ -33,6 +33,7 @@ export default function PDFUploader() {
   const handleFileSelect = async (e) => {
     const file = e.target.files[0]
     if (file) {
+      if (onFileSelect) onFileSelect(file)
       await uploadFile(file)
     }
   }

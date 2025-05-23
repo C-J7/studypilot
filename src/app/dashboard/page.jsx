@@ -120,27 +120,39 @@ export default function Dashboard() {
 
   return (
     <div className={styles.dashboardGrid}>
-      <WelcomeCard userName={userNameForWelcomeCard} progress={progress?.[0]?.overall_progress || 0} />
-      <SearchBar onSearch={handleSearch} loading={searchLoading} error={searchError} results={searchResults} />
-      
-        <>
-          <BaseCard className={styles.quickStatsCard}>
-            <h3>Quick Stats</h3>
-            {quickStats.map(stat => (
-              <div key={stat.label} className={styles.statRow}>
-                <span>{stat.label}</span>
-                <span>{stat.value}</span>
-                <div className={styles.statBar}><div className={styles.statBarFill} style={{width: stat.label === 'Courses' ? `${(stats.courses/5)*100}%` : stat.label === 'Current Streak' ? `${(stats.currentStreak/30)*100}%` : `${(stats.longestStreak/30)*100}%`}} /></div>
+      <div style={{ gridColumn: '1 / 4' }}>
+        <WelcomeCard userName={userNameForWelcomeCard} progress={progress?.[0]?.overall_progress || 0} />
+      </div>
+      <BaseCard className={styles.quickStatsCard}>
+        <h3>Quick Statistics</h3>
+        {quickStats.map(stat => {
+          let percent = 0;
+          if (stat.label === 'Courses') {
+            percent = Math.min((stat.value / 5) * 100, 100);
+          } else if (stat.label === 'Current Streak') {
+            const days = parseInt(stat.value);
+            percent = Math.min((days / 30) * 100, 100);
+          } else if (stat.label === 'Longest Streak') {
+            const days = parseInt(stat.value);
+            percent = Math.min((days / 30) * 100, 100);
+          }
+          return (
+            <div key={stat.label} className={styles.statRow}>
+              <span>{stat.label}</span>
+              <span>{stat.value}</span>
+              <div className={styles.statBar}>
+                <div className={styles.statBarFill} style={{ width: `${percent}%` }} />
               </div>
-            ))}
-          </BaseCard>
-          <BaseCard className={styles.chartCard}>
-            <h3>Time Spent Studying</h3>
-            <StudyChartCard data={chartData} options={chartOptions} />
-          </BaseCard>
-          <TopCoursesCard courses={syllabus} progress={progress} />
-          <RemindersCard reminders={reminders} />
-        </>
+            </div>
+          );
+        })}
+      </BaseCard>
+      <BaseCard className={styles.chartCard}>
+        <h3>Time Spent Studying</h3>
+        <StudyChartCard data={chartData} options={chartOptions} />
+      </BaseCard>
+      <TopCoursesCard courses={syllabus} progress={progress} />
+      <RemindersCard reminders={reminders} />
     </div>
   );
 }
