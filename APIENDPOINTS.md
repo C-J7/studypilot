@@ -3,8 +3,17 @@
 ## Table of Contents
 - [Syllabus Endpoints](#syllabus-endpoints)
 - [Study Plan Endpoints](#study-plan-endpoints)
+- [PDF Parsing](#pdf-parsing)
+- [Progress Tracking](#progress-tracking)
+- [Session Progress Update](#session-progress-update)
+- [Google Calendar Sync](#google-calendar-sync)
+- [Error Handling](#error-handling)
 
----
+
+
+
+
+
 
 ## Syllabus Endpoints
 
@@ -48,7 +57,8 @@
   }
   ```
 
----
+
+
 
 ### 2. Get Syllabi
 
@@ -81,7 +91,22 @@
   ]
   ```
 
----
+  
+### 3. Get Syllabi for a User
+- **Endpoint:** `GET /api/syllabus/user/{userId}`
+- **Description:** Get all syllabi uploaded by a specific user.
+- **Response:**  
+  Array of syllabus objects.
+
+
+### 4. Search Syllabi
+- **Endpoint:** `GET /api/syllabus/search`
+- **Description:** Search syllabi by faculty, department, semester, or keyword.
+- **Query Parameters:** `faculty`, `department`, `semester`, `search` (all optional)
+- **Response:**  
+  Array of syllabus objects.
+
+
 
 ## Study Plan Endpoints
 
@@ -149,8 +174,28 @@
   }
   ```
 
----
+  
+### 2. Get Study Plans for a User
+- **Endpoint:** `GET /api/study-plan/user/{userId}`
+- **Description:** Retrieve all study plans for a user.
+- **Response:**  
+  Array of study plan response objects.
 
+
+
+
+### 3. Get a Study Plan by ID
+- **Endpoint:** `GET /api/study-plan/{id}`
+- **Description:** Retrieve a study plan by its ID.
+- **Response:**  
+  Study plan object.
+
+
+### 4. Delete a Study Plan
+- **Endpoint:** `DELETE /api/study-plan/{id}`
+- **Description:** Delete a study plan by its ID.
+- **Response:**  
+  HTTP 204 No Content on success.
 
 
 ## Error Responses
@@ -158,3 +203,67 @@
 - **400 Bad Request:** Missing or invalid parameters.
 - **401 Unauthorized:** If authentication is enabled and not provided.
 - **500 Internal Server Error:** Server-side error or exception.
+
+
+
+## Progress Tracking
+
+### 1. Get User Progress Statistics
+- **Endpoint:** `GET /api/study-plan/user/{userId}/progress`
+- **Description:** Get statistics about a user's study progress.
+- **Response:**
+  ```json
+  {
+    "totalSessions": 30,
+    "completedSessions": 10,
+    "currentStreak": 3,
+    "longestStreak": 5
+  }
+  ```
+
+
+## Session Progress Update
+
+### 1. Update Session Progress
+- **Endpoint:** `PUT /api/study-plan/{studyPlanId}/session/{sessionId}`
+- **Description:** Mark a study session as completed or not.
+- **Parameters:**  
+  - `completed` (boolean, required, as query param)
+- **Example:**  
+  `/api/study-plan/42/session/7?completed=true`
+- **Response:**  
+  Updated study plan response object.
+
+
+
+
+## Google Calendar Sync
+
+### 1. Google OAuth Login
+- **Endpoint:** `GET /api/auth/google/login`
+- **Description:** Redirects to Google OAuth login for calendar sync.
+- **Response:**  
+  Redirect to Google login.
+
+### 2. Google OAuth Callback
+- **Endpoint:** `GET /api/auth/google/callback?code=...`
+- **Description:** Handles the OAuth callback and exchanges code for access token.
+- **Response:**  
+  Success message or token.
+
+
+
+
+## Error Handling
+
+All endpoints return error responses in the following format (see [GlobalExceptionHandler.java](#)):
+```json
+{
+  "timestamp": "2025-05-22T03:41:33.070006666",
+  "message": "An error occurred: <error details>"
+}
+```
+- **400 Bad Request:** Invalid input or missing parameters.
+- **404 Not Found:** Resource not found.
+- **500 Internal Server Error:** Unexpected server error.
+

@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from 'react';
 import { generateStudyPlan } from '@/app/api/services/api';
 import facultiesData from '@/utils/faculties_departments.json';
