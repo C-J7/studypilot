@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react';
+import { fetchAllDashboardData } from '@/app/api/services/api';
 import SkeletonLoader from '@/components/SkeletonLoader'
 import styles from './dashboard.module.css'
 import { useAuth } from '@/contexts/AuthContext'
@@ -14,7 +15,6 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { useDashboard } from '@/contexts/DashboardContext';
 import SearchBar from '@/components/SearchBar';
 import BaseCard from '@/components/BaseCard';
 import RemindersCard from '@/components/RemindersCard';
@@ -25,10 +25,18 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { progress, planner, syllabus, reminders, loading, error, refetch } = useDashboard();
+  const [data, setData] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    fetchAllDashboardData(user.id).then(res => {
+      if (mounted) setData(res);
+    });
+    return () => { mounted = false; };
+  }, [user.id]);
 
   const chartData = {
     labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
@@ -75,17 +83,7 @@ export default function Dashboard() {
     }
   };
 
-  //Compute dashboard stats from progress and planner data
-  const stats = {
-    courses: syllabus ? syllabus.length : 0,
-    currentStreak: progress?.[0]?.current_streak || 0,
-    longestStreak: progress?.[0]?.longest_streak || 0,
-    studyHours: progress?.[0]?.weekly_hours || 0,
-    upcomingSessions: planner ? planner.length : 0,
-  };
-
-  //Handle loading state
-  if (loading) {
+  if (!data) {
     return (
       <div className={styles.container}>
         {/* Welcome card skeleton */}
@@ -103,7 +101,10 @@ export default function Dashboard() {
         </div>
       </div>
     );
-  }
+  } 
+
+  const { progress, planner, syllabus, reminders, loading, error } = data;
+
   if (error) {
     return <div className="dataMessage">{error}</div>;
   }
@@ -112,9 +113,9 @@ export default function Dashboard() {
 
   //Quick stats
   const quickStats = [
-    { label: 'Courses', value: stats.courses },
-    { label: 'Current Streak', value: `${stats.currentStreak} days` },
-    { label: 'Longest Streak', value: `${stats.longestStreak} days` },
+    { label: 'Courses', value: syllabus ? syllabus.length : 0 },
+    { label: 'Current Streak', value: `${progress?.[0]?.current_streak || 0} days` },
+    { label: 'Longest Streak', value: `${progress?.[0]?.longest_streak || 0} days` },
   ];
 
   return (

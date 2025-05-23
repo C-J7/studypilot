@@ -21,7 +21,20 @@ const SkeletonLoader = ({ type }) => {
     ),
     chart: (
       <div className={styles.chart}></div>
-    )
+    ),
+    reminder: (
+      <div className={styles.reminder}>
+        <div className={styles.icon}></div>
+        <div className={styles.text}></div>
+        <div className={styles.time}></div>
+      </div>
+    ),
+    dashboardCard: (
+      <div className={styles.dashboardCard}>
+        <div className={styles.title}></div>
+        <div className={styles.bar}></div>
+      </div>
+    ),
   };
 
   return skeletonTypes[type] || null;

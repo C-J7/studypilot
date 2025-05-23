@@ -9,9 +9,9 @@ import styles from './dashboard.module.css'
 import clsx from 'clsx'
 import SkeletonLoader from '@/components/SkeletonLoader'
 
-//Lazy load dashboard pages for performance
+//Lazyloading of dashboard pages for performance
 const DashboardHome = lazy(() => import('./page'))
-const SyllabusPage = lazy(() => import('./upload/page'))
+const SyllabusPage = lazy(() => import('./upload-syllabus/page'))
 const StudyPlannerPage = lazy(() => import('./study-planner/page'))
 const ProgressPage = lazy(() => import('./progress/page'))
 

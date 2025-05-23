@@ -1,136 +1,121 @@
-'use client'
+import { useState, useEffect } from 'react';
+import { generateStudyPlan } from '@/app/api/services/api';
+import facultiesData from '@/utils/faculties_departments.json';
+import styles from '@/styles/StudyPlanner.module.css';
 
-import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import api, { completeSession } from '@/app/api/services/api'
-import  SkeletonLoader  from '@/components/SkeletonLoader'
-import styles from './planner.module.css'
-import { useAuth } from '@/contexts/AuthContext' 
+export default function StudyPlanner({ user }) {
+  const [faculty, setFaculty] = useState('');
+  const [department, setDepartment] = useState('');
+  const [level, setLevel] = useState('');
+  const [syllabusId, setSyllabusId] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [hoursPerDay, setHoursPerDay] = useState('');
+  const [preferredTime, setPreferredTime] = useState('');
+  const [busyHours, setBusyHours] = useState({});
+  const [departments, setDepartments] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [plan, setPlan] = useState(null);
 
-const PlannerPage = () => { 
-  const { user } = useAuth() 
-  const [events, setEvents] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [selectedPlan, setSelectedPlan] = useState(null)
-
+  // Auto-select from user profile if available
   useEffect(() => {
-    const fetchPlans = async () => {
-      if (user && user.id) { 
-        setLoading(true);
-        try {
-          const response = await api.get(`/api/study-plan/user/${user.id}`)
-          const formattedEvents = response.data.map(plan => ({
-            id: plan.id,
-            title: plan.course,
-            start: plan.startDate,
-            end: plan.endDate,
-            extendedProps: { ...plan }
-          }))
-          setEvents(formattedEvents)
-        } catch (error) {
-          console.error('Error fetching study plan:', error)
-          setEvents([]); 
-        } finally {
-          setLoading(false)
-        }
-      } else {
-        setLoading(false);
-      }
+    if (user) {
+      setFaculty(user.faculty || '');
+      setDepartment(user.department || '');
+      setLevel(user.level || '');
     }
+  }, [user]);
 
-    fetchPlans()
-  }, [user]) 
+  // Update departments when faculty changes
+  useEffect(() => {
+    const fac = facultiesData[0].faculties.find(f => f.name === faculty);
+    setDepartments(fac ? fac.departments : []);
+  }, [faculty]);
 
-  const handleDownload = async (planId) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const data = {
+      syllabusId,
+      startDate,
+      endDate,
+      userId: user?.id,
+      busyHours,
+      hoursPerDay,
+      preferredTime,
+    };
     try {
-      const response = await api.get(`/api/study-plan/${planId}/export`, {
-        responseType: 'blob'
-      })
-      const url = window.URL.createObjectURL(new Blob([response.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', `study-plan-${planId}.pdf`)
-      document.body.appendChild(link)
-      link.click()
-    } catch (error) {
-      console.error('Download failed:', error)
+      const res = await generateStudyPlan(data);
+      setPlan(res.data);
+    } finally {
+      setLoading(false);
     }
-  }
-
-  const handleCompleteSession = async (studyPlanId, sessionId) => {
-    try {
-      await completeSession(studyPlanId, sessionId)
-      //Optionally refetch events or update UI
-    } catch (error) {
-      console.error('Failed to mark session complete:', error)
-    }
-  }
+  };
 
   return (
     <div className={styles.container}>
-      {loading ? (
-        <SkeletonLoader type="card" count={3} />
-      ) : (
-        <>
-          <div className={styles.calendarContainer}>
-            <FullCalendar
-              plugins={[dayGridPlugin, interactionPlugin]}
-              initialView="dayGridMonth"
-              events={events}
-              eventClick={(info) => setSelectedPlan(info.event.extendedProps)}
-              headerToolbar={{
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,dayGridWeek'
-              }}
-            />
-          </div>
-
-          <AnimatePresence>
-            {selectedPlan && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className={styles.planDetails}
-              >
-                <h3>{selectedPlan.course} Study Plan</h3>
-                <div className={styles.detailItem}>
-                  <span>Start Date:</span>
-                  {new Date(selectedPlan.startDate).toLocaleDateString()}
-                </div>
-                <div className={styles.detailItem}>
-                  <span>End Date:</span>
-                  {new Date(selectedPlan.endDate).toLocaleDateString()}
-                </div>
-                <button 
-                  onClick={() => handleDownload(selectedPlan.id)}
-                  className={styles.downloadButton}
-                >
-                  Download Plan
-                </button>
-                <button
-                  onClick={() => setSelectedPlan(null)}
-                  className={styles.closeButton}
-                >
-                  Close
-                </button>
-                <button
-                  onClick={() => handleCompleteSession(selectedPlan.id, selectedPlan.sessionId)}
-                  className={styles.completeButton}
-                >
-                  Mark Session Complete
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </>
+      <form className={styles.form} onSubmit={handleSubmit}>
+        {/* Time Period */}
+        <div className={styles.section}>
+          <label>Start Date</label>
+          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required />
+          <label>End Date</label>
+          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} required />
+        </div>
+        {/* Study Preferences */}
+        <div className={styles.section}>
+          <label>Hours Per Day</label>
+          <select value={hoursPerDay} onChange={e => setHoursPerDay(e.target.value)} required>
+            <option value="">Select hours</option>
+            {[1,2,3,4,5,6].map(h => <option key={h} value={h}>{h}</option>)}
+          </select>
+          <label>Preferred Time</label>
+          <select value={preferredTime} onChange={e => setPreferredTime(e.target.value)}>
+            <option value="">Select time</option>
+            <option value="morning">Morning</option>
+            <option value="afternoon">Afternoon</option>
+            <option value="evening">Evening</option>
+          </select>
+        </div>
+        {/* Course Selection */}
+        <div className={styles.section}>
+          <label>Faculty</label>
+          <select value={faculty} onChange={e => setFaculty(e.target.value)} required>
+            <option value="">Select faculty</option>
+            {facultiesData[0].faculties.map(f => (
+              <option key={f.name} value={f.name}>{f.name}</option>
+            ))}
+          </select>
+          <label>Department</label>
+          <select value={department} onChange={e => setDepartment(e.target.value)} required>
+            <option value="">Select department</option>
+            {departments.map(dep => (
+              <option key={dep} value={dep}>{dep}</option>
+            ))}
+          </select>
+          <label>Level</label>
+          <select value={level} onChange={e => setLevel(e.target.value)} required>
+            <option value="">Select level</option>
+            {[100,200,300,400,500].map(lvl => (
+              <option key={lvl} value={lvl}>{lvl} Level</option>
+            ))}
+          </select>
+        </div>
+        {/* Syllabus ID (could be a dropdown if you fetch syllabi for user/faculty/department) */}
+        <div className={styles.section}>
+          <label>Syllabus</label>
+          <input type="text" value={syllabusId} onChange={e => setSyllabusId(e.target.value)} placeholder="Enter Syllabus ID" required />
+        </div>
+        <button className={styles.button} type="submit" disabled={loading}>
+          {loading ? 'Generating...' : 'Generate Study Plan'}
+        </button>
+      </form>
+      {plan && (
+        <div className={styles.planPreview}>
+          <h3>Generated Plan</h3>
+          {/* Render plan summary here */}
+        </div>
       )}
     </div>
-  )
+  );
 }
-
-export default PlannerPage;
