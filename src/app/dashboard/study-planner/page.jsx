@@ -69,15 +69,31 @@ export default function StudyPlanner({ user }) {
           {/*Time Period */}
           <div className={styles.section}>
             <label>Start Date</label>
-            <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required />
+            <div className={styles.dateInputWrapper}>
+              <input
+                type="date"
+                className={styles.dateInput}
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
+                required
+              />
+            </div>
             <label>End Date</label>
-            <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} required />
+            <div className={styles.dateInputWrapper}>
+              <input
+                type="date"
+                className={styles.dateInput}
+                value={endDate}
+                onChange={e => setEndDate(e.target.value)}
+                required
+              />
+            </div>
           </div>
           {/*Study Preferences */}
           <div className={styles.section}>
             <label>Hours Per Day</label>
             <CustomDropdown
-              options={[1,2,3,4,5,6]}
+              options={["1", "2", "3", "4", "5", "6", "7", "8"]}
               value={hoursPerDay}
               onChange={setHoursPerDay}
               placeholder="Select hours"
