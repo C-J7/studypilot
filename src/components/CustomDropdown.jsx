@@ -18,6 +18,7 @@ const CustomDropdown = ({ options, value, onChange, placeholder = 'Select...', l
 
   const filteredOptions = options.filter(opt => {
     const label = filterKey ? opt[filterKey] : opt;
+    if (typeof label !== 'string') return false;
     return label.toLowerCase().includes(search.toLowerCase());
   });
 

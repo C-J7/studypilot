@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { uploadSyllabus } from '@/app/api/services/api';
 import facultiesData from '@/utils/faculties_departments.json';
 import styles from '@/styles/UploadSyllabus.module.css';
+import CustomDropdown from '@/components/CustomDropdown';
 
 export default function UploadSyllabus({ user }) {
   const [faculty, setFaculty] = useState('');
@@ -64,7 +65,12 @@ export default function UploadSyllabus({ user }) {
           ))}
         </select>
         <label>Semester</label>
-        <input type="text" value={semester} onChange={e => setSemester(e.target.value)} required />
+        <CustomDropdown
+          options={["First", "Second"]}
+          value={semester}
+          onChange={setSemester}
+          placeholder="Select semester"
+        />
         <label>PDF File</label>
         <input type="file" accept="application/pdf" onChange={e => setFile(e.target.files[0])} required />
         <button className={styles.button} type="submit" disabled={loading}>
