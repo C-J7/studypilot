@@ -11,14 +11,14 @@ import SkeletonLoader from '@/components/SkeletonLoader'
 
 //Lazyloading of dashboard pages for performance
 const DashboardHome = lazy(() => import('./page'))
-const SyllabusPage = lazy(() => import('./upload-syllabus/page'))
+const UploadSyllabusPage = lazy(() => import('./upload-syllabus/page'))
 const StudyPlannerPage = lazy(() => import('./study-planner/page'))
 const ProgressPage = lazy(() => import('./progress/page'))
 
 //Helper to map route to component
 const routeToComponent = (pathname) => {
   if (pathname === '/dashboard') return <DashboardHome />
-  if (pathname === '/dashboard/upload') return <SyllabusPage />
+  if (pathname === '/dashboard/upload-syllabus') return <UploadSyllabusPage />
   if (pathname === '/dashboard/study-planner') return <StudyPlannerPage />
   if (pathname === '/dashboard/progress') return <ProgressPage />
   return <DashboardHome />
@@ -86,9 +86,9 @@ export default function DashboardLayout({ children }) {
       href: '/dashboard'
     },
     {
-      label: 'Find Syllabus',
+      label: 'Upload Syllabus',
       icon: <UploadFile className={styles.icon} />,
-      href: '/dashboard/upload'
+      href: '/dashboard/upload-syllabus'
     },
     {
       label: 'Study Planner',

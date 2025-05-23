@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { generateStudyPlan } from '@/app/api/services/api';
 import facultiesData from '@/utils/faculties_departments.json';
+import CustomDropdown from '@/components/CustomDropdown';
 import styles from '@/styles/StudyPlanner.module.css';
 
 export default function StudyPlanner({ user }) {
@@ -18,7 +19,7 @@ export default function StudyPlanner({ user }) {
   const [loading, setLoading] = useState(false);
   const [plan, setPlan] = useState(null);
 
-  // Auto-select from user profile if available
+  //Auto-select from user profile if available
   useEffect(() => {
     if (user) {
       setFaculty(user.faculty || '');
@@ -27,7 +28,7 @@ export default function StudyPlanner({ user }) {
     }
   }, [user]);
 
-  // Update departments when faculty changes
+  //Update departments when faculty changes
   useEffect(() => {
     const fac = facultiesData[0].faculties.find(f => f.name === faculty);
     setDepartments(fac ? fac.departments : []);
@@ -66,43 +67,53 @@ export default function StudyPlanner({ user }) {
         {/* Study Preferences */}
         <div className={styles.section}>
           <label>Hours Per Day</label>
-          <select value={hoursPerDay} onChange={e => setHoursPerDay(e.target.value)} required>
-            <option value="">Select hours</option>
-            {[1,2,3,4,5,6].map(h => <option key={h} value={h}>{h}</option>)}
-          </select>
+          <CustomDropdown
+            options={[1,2,3,4,5,6]}
+            value={hoursPerDay}
+            onChange={setHoursPerDay}
+            placeholder="Select hours"
+            label=""
+          />
           <label>Preferred Time</label>
-          <select value={preferredTime} onChange={e => setPreferredTime(e.target.value)}>
-            <option value="">Select time</option>
-            <option value="morning">Morning</option>
-            <option value="afternoon">Afternoon</option>
-            <option value="evening">Evening</option>
-          </select>
+          <CustomDropdown
+            options={["morning", "afternoon", "evening"]}
+            value={preferredTime}
+            onChange={setPreferredTime}
+            placeholder="Select time"
+            label=""
+          />
         </div>
-        {/* Course Selection */}
+        {/*Course Selection */}
         <div className={styles.section}>
           <label>Faculty</label>
-          <select value={faculty} onChange={e => setFaculty(e.target.value)} required>
-            <option value="">Select faculty</option>
-            {facultiesData[0].faculties.map(f => (
-              <option key={f.name} value={f.name}>{f.name}</option>
-            ))}
-          </select>
+          <CustomDropdown
+            options={facultiesData[0].faculties.map(f => f.name)}
+            value={faculty}
+            onChange={val => {
+              setFaculty(val);
+              setDepartment('');
+            }}
+            placeholder="Select faculty"
+            label=""
+          />
           <label>Department</label>
-          <select value={department} onChange={e => setDepartment(e.target.value)} required>
-            <option value="">Select department</option>
-            {departments.map(dep => (
-              <option key={dep} value={dep}>{dep}</option>
-            ))}
-          </select>
+          <CustomDropdown
+            options={departments}
+            value={department}
+            onChange={setDepartment}
+            placeholder="Select department"
+            label=""
+          />
           <label>Level</label>
-          <select value={level} onChange={e => setLevel(e.target.value)} required>
-            <option value="">Select level</option>
-            {[100,200,300,400,500].map(lvl => (
-              <option key={lvl} value={lvl}>{lvl} Level</option>
-            ))}
-          </select>
+          <CustomDropdown
+            options={[100,200,300,400,500].map(lvl => `${lvl} Level`)}
+            value={level ? `${level} Level` : ''}
+            onChange={val => setLevel(val.replace(' Level',''))}
+            placeholder="Select level"
+            label=""
+          />
         </div>
-        {/* Syllabus ID (could be a dropdown if you fetch syllabi for user/faculty/department) */}
+        {/*Syllabus ID (could be a dropdown, might later remove or use the title instead.*/}
         <div className={styles.section}>
           <label>Syllabus</label>
           <input type="text" value={syllabusId} onChange={e => setSyllabusId(e.target.value)} placeholder="Enter Syllabus ID" required />
@@ -114,7 +125,19 @@ export default function StudyPlanner({ user }) {
       {plan && (
         <div className={styles.planPreview}>
           <h3>Generated Plan</h3>
-          {/* Render plan summary here */}
+          <div className={styles.planList}>
+            {plan.sessions && plan.sessions.map(session => (
+              <div key={session.id} className={styles.planCard}>
+                <div className={styles.planTopic}>{session.topic}</div>
+                <div className={styles.planTime}>
+                  {new Date(session.startTime).toLocaleString()} - {new Date(session.endTime).toLocaleString()}
+                </div>
+                <div className={styles.planStatus}>
+                  {session.completed ? <span className={styles.completed}>Completed</span> : <span className={styles.pending}>Pending</span>}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

@@ -41,3 +41,40 @@
   border-radius: 12px;
   padding: 1.5rem;
 }
+.planList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+.planCard {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px #dbeafe;
+  padding: 1rem 1.5rem;
+  min-width: 220px;
+  flex: 1 1 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.planTopic {
+  font-weight: bold;
+  color: #338aff;
+  font-size: 1.1rem;
+}
+.planTime {
+  color: #555;
+  font-size: 0.97rem;
+}
+.planStatus {
+  margin-top: 0.5rem;
+}
+.completed {
+  color: #2e7d32;
+  font-weight: bold;
+}
+.pending {
+  color: #e67e22;
+  font-weight: bold;
+}
