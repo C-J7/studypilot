@@ -3,19 +3,17 @@ import styles from './about.module.css'
 import Link from 'next/link'
 
 const teamMembers = [
-  { name: "Bamgbose Christian", role: "Team Lead", description: "Full-stack Software Developer and Project Lead" },
-  { name: "Blossom ", role: " Project Manager", description: "Specializes in  Project Management, Ensuring productivity and team management." },
-  { name: "Goat", role: " UI/UX Designer", description: "Creates intuitive and accessible User interfaces" },
-  { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Lorem Ipsium" },
-  { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Lorem Ipsiums" },
-  { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Lorem Ipsium" },
-  { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Lorem Ipsium" },
-  { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Lorem Ipsium" },
-  { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Lorem Ipsium" },
-  { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Lorem Ipsium" },
-  { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Lorem Ipsium" },
-  { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Lorem Ipsium" },
-  { name: "Lorem Ipsium", role: "Lorem Ipsium", description: "Lorem Ipsium" }
+  { name: "BAMGBOSE CHRISTIAN JESUJUNI", role: "Team Lead", description: "Full-stack Software Developer and Project Lead" },
+  { name: "OGBONNA BLOSSOM NNEOMA", role: " Project Manager", description: "Specializes in  Project Management, Ensuring productivity and team management." },
+  { name: "OKPALAEKE CHUKWUDUBEM DECLAN IKEM", role: " UI/UX Designer", description: "Creates intuitive and accessible User interfaces" },
+  { name: "OLUKAYODE PEACE DARASIMI", role: "Authentication & Database Setup (PostgreSQL)", description: "Implemented Supabase Authentification and Setup the PostgreSql Services" },
+  { name: "AKINSOHUN OLUWANIFEMI SUSANNA", role: "QA Tester", description: "Ensured the Web Services rendered met modern Standards through continuous testing." },
+  { name: "OLOYEDE ABDULMOTIN FOLUSO", role: "Project Researcher", description: "Conducted Project research to validate the need for the tool." },
+  { name: "IBEAKANMA CHIMEREZE JESSE", role: "Frontend Developer", description: "Developed the Landing" },
+  { name: "OLUWASEMILORE TOLUWANIMI", role: " UI/UX Designer", description: "Creates intuitive and accessible User interfaces" },
+  { name: "ALADEITAN TONILOBA DAVID", role: "User Analytics", description: "Conducted Surveys and facilitated User testing." },
+  { name: "ADEYEMI ISRAEL ADETOLA", role: "User Analytics", description: "Conducted Surveys and facilitated User testing." }
+
 ]
 
 export default function About() {
