@@ -26,6 +26,7 @@ export default function StudyPlanner({ user }) {
       setFaculty(user.faculty || '');
       setDepartment(user.department || '');
       setLevel(user.level || '');
+      setSyllabusId == 1;
     }
   }, [user]);
 
@@ -124,7 +125,8 @@ export default function StudyPlanner({ user }) {
           {/*Syllabus ID (could be a dropdown, might later remove or use the title instead.*/}
           <div className={styles.section}>
             <label>Syllabus</label>
-            <input type="text" value={syllabusId} onChange={e => setSyllabusId(e.target.value)} placeholder="Enter Syllabus ID" required />
+            {/* Use 1 for now since demo */}
+            {/* <input type="text" value={syllabusId} onChange={e => setSyllabusId(e.target.value)} placeholder="Enter Syllabus ID" required /> */}
           </div>
           <button className={styles.button} type="submit" disabled={loading}>
             {loading ? 'Generating...' : 'Generate Study Plan'}
@@ -133,7 +135,7 @@ export default function StudyPlanner({ user }) {
       ) : (
         plan && (
           <div className={styles.planPreview}>
-            <h3>Generated Plan</h3>
+            <h3>Study Plan</h3>
             <div className={styles.planList}>
               {plan.sessions && plan.sessions.map(session => (
                 <div key={session.id} className={styles.planCard}>
@@ -154,7 +156,7 @@ export default function StudyPlanner({ user }) {
               title="Generate a new studyplan"
               type="button"
             >
-              Generate studyplan
+              Generate New studyplan
             </button>
           </div>
         )
