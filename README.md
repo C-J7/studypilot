@@ -1,7 +1,4 @@
 # StudyPilot 📚
-
-todo: npm install chart.js react-chartjs-2
-
 > Transform your academic journey with intelligent study planning and organization
 
 [![Next.js](https://img.shields.io/badge/Next.js-14.1.0-black)](https://nextjs.org/)
@@ -10,7 +7,7 @@ todo: npm install chart.js react-chartjs-2
 
 StudyPilot is a modern university productivity platform that helps students organize their academic materials, generate intelligent study schedules, and track their progress effectively.
 
-![StudyPilot Dashboard](https://studypilot.vercel.app/dashboard-preview.png)
+
 
 ## 🎯 Features
 
@@ -41,12 +38,12 @@ StudyPilot is a modern university productivity platform that helps students orga
 - **Frontend**
   - Next.js 14
   - React 18
-  - Tailwind CSS
+  - Vanilla CSS
   - ShadcN UI Components
 
 - **Backend & Auth**
   - Supabase
-  - Neon
+  - NeonDb
   - Springboot 
   - GoogleCalender
   - Row Level Security (RLS)
@@ -131,7 +128,7 @@ The application is deployed on Vercel with automatic deployments from the main b
 
 
 
-Made with ❤️ by the StudyPilot Team
+Made by the StudyPilot Team
 
 
 
