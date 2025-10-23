@@ -12,7 +12,7 @@ import SkeletonLoader from '@/components/SkeletonLoader'
 import styles from './progress.module.css'
 import { useAuth } from '@/contexts/AuthContext' 
 
-//To use we need to register the components we are using
+//To use the module we need to register the components we are using
 Chart.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend)
 
 
@@ -50,7 +50,6 @@ const ProgressPage = () => {
     fetchProgress()
   }, [user])
 
-  //In the event progress data is default
   const chartData = {
     labels: progressData?.dailyProgress?.map(day => day.date) || [],
     datasets: [{
