@@ -77,3 +77,24 @@
       }
   }
   
+.doneButton {
+  flex-shrink: 0;
+  margin-left: 1rem;
+  padding: 0.45rem 0.9rem;
+  border: none;
+  border-radius: 8px;
+  background: #1e3a8a;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.doneButton:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.doneButton:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}

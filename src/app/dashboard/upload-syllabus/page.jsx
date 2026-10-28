@@ -1,11 +1,13 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { uploadSyllabus } from '@/app/api/services/api';
+import { uploadSyllabus, errorMessage } from '@/app/api/services/api';
+import { useAuth } from '@/contexts/AuthContext';
 import facultiesData from '@/utils/faculties_departments.json';
 import styles from '@/styles/UploadSyllabus.module.css';
 import CustomDropdown from '@/components/CustomDropdown';
 
-export default function UploadSyllabus({ user }) {
+export default function UploadSyllabus() {
+  const { user } = useAuth();
   const [faculty, setFaculty] = useState('');
   const [department, setDepartment] = useState('');
   const [departments, setDepartments] = useState([]);
@@ -13,7 +15,8 @@ export default function UploadSyllabus({ user }) {
   const [semester, setSemester] = useState('');
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (user) {
@@ -30,6 +33,8 @@ export default function UploadSyllabus({ user }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
+    setSuccess(null);
     const formData = new FormData();
     formData.append('file', file);
     formData.append('title', title);
@@ -38,8 +43,10 @@ export default function UploadSyllabus({ user }) {
     formData.append('semester', semester);
     formData.append('userId', user?.id);
     try {
-      await uploadSyllabus(formData);
-      setSuccess(true);
+      const res = await uploadSyllabus(formData);
+      setSuccess(`Uploaded "${res.data.title}": ${res.data.topics.length} topics found. Head to Study Planner to schedule it.`);
+    } catch (err) {
+      setError(errorMessage(err, 'Upload failed.'));
     } finally {
       setLoading(false);
     }
@@ -129,7 +136,11 @@ export default function UploadSyllabus({ user }) {
         <button className={styles.button} type="submit" disabled={loading}>
           {loading ? 'Uploading...' : 'Upload Syllabus'}
         </button>
-        {success && <div className={styles.success}>Upload successful!</div>}
+        {success && <div className={styles.success}>{success}</div>}
+        {error && <div role="alert" style={{ color: '#b91c1c', marginTop: '1rem' }}>{error}</div>}
+        <p className={styles.supportText} style={{ marginTop: '1rem' }}>
+          No syllabus handy? <a href="/sample-syllabus.pdf" download>Download a sample PDF</a> and upload it.
+        </p>
       </form>
     </div>
   );

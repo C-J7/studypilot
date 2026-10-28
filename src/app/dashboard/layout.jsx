@@ -4,7 +4,6 @@ import { useEffect, useState, Suspense, lazy } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { Home, UploadFile, CalendarToday, BarChart, Logout } from '@mui/icons-material'
 import { useAuth } from '@/contexts/AuthContext'
-import { useDashboard } from '@/contexts/DashboardContext'
 import styles from './dashboard.module.css'
 import clsx from 'clsx'
 import SkeletonLoader from '@/components/SkeletonLoader'
@@ -26,7 +25,6 @@ const routeToComponent = (pathname) => {
 
 export default function DashboardLayout({ children }) {
   const { user, signOut, loading } = useAuth()
-  const { loading: dashboardLoading, error: dashboardError } = useDashboard()
   const router = useRouter()
   const pathname = usePathname()
 
@@ -52,16 +50,13 @@ export default function DashboardLayout({ children }) {
     }
   }
 
-  if (loading || !user || dashboardLoading) {
+  if (loading || !user) {
     return (
       <div className={styles.pageLoader}>
         <SkeletonLoader type="card" />
         <span style={{marginLeft: 16}}>Loading Dashboard...</span>
       </div>
     )
-  }
-  if (dashboardError) {
-    return <div className={styles.dataMessage}>{dashboardError}</div>
   }
 
   const fullName = user?.user_metadata?.full_name

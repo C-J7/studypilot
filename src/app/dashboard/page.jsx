@@ -1,93 +1,56 @@
 'use client'
 
-import { useEffect, useState } from 'react';
-import { fetchAllDashboardData } from '@/app/api/services/api';
+import { useCallback, useEffect, useState } from 'react';
+import { fetchAllDashboardData, setSessionCompleted, errorMessage } from '@/app/api/services/api';
 import SkeletonLoader from '@/components/SkeletonLoader'
 import styles from './dashboard.module.css'
 import { useAuth } from '@/contexts/AuthContext'
-import WelcomeCard from '@/components/WelcomeCard' 
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import SearchBar from '@/components/SearchBar';
+import WelcomeCard from '@/components/WelcomeCard'
 import BaseCard from '@/components/BaseCard';
 import RemindersCard from '@/components/RemindersCard';
 import StudyChartCard from '@/components/StudyChartCard';
 import TopCoursesCard from '@/components/TopCoursesCard';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+const formatSessionTime = (iso) =>
+  new Date(iso).toLocaleString(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' });
 
 export default function Dashboard() {
   const { user } = useAuth();
   const [data, setData] = useState(null);
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [searchError, setSearchError] = useState(null);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    let mounted = true;
-    fetchAllDashboardData(user.id).then(res => {
-      if (mounted) setData(res);
-    });
-    return () => { mounted = false; };
+  const load = useCallback(() => {
+    setError(null);
+    return fetchAllDashboardData(user.id)
+      .then(setData)
+      .catch(err => setError(errorMessage(err, 'Could not load your dashboard.')));
   }, [user.id]);
 
-  const chartData = {
-    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-    datasets: [
-      {
-        label: 'Study Hours',
-        data: [2, 3, 1.5, 4, 2.5, 3, 1], 
-        backgroundColor: 'rgba(30, 58, 138, 0.8)', 
-        borderRadius: 4,
-      },
-    ],
-  };
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Weekly Study Time',
-      },
-    },
-  };
+  useEffect(() => { load(); }, [load]);
 
-  //Search syllabus by faculty/department
-  const handleSearch = async (faculty, department, query) => {
-    setSearchLoading(true);
-    setSearchError(null);
+  const completeSession = async (session) => {
     try {
-      //Query syllabus table for user's faculty/department
-      const { data, error } = await supabase
-        .from('syllabus')
-        .select('*')
-        .eq('faculty', faculty)
-        .eq('department', department)
-        .ilike('title', `%${query}%`);
-      if (error) throw error;
-      setSearchResults(data || []);
+      await setSessionCompleted(session.studyPlanId, session.id, true);
+      await load();
     } catch (err) {
-      setSearchError('Failed to search syllabus.');
-    } finally {
-      setSearchLoading(false);
+      setError(errorMessage(err));
     }
   };
+
+  if (error && !data) {
+    return (
+      <div className={styles.dataMessage}>
+        <p>{error}</p>
+        <button type="button" onClick={load}>Retry</button>
+      </div>
+    );
+  }
 
   if (!data) {
     return (
       <div className={styles.container}>
         {/* Welcome card skeleton */}
-        <div className={styles.welcomeCardSkeleton}></div> 
+        <div className={styles.welcomeCardSkeleton}></div>
         <div className={styles.statsGrid}>
           {[...Array(4)].map((_, i) => <SkeletonLoader key={i} type="card" />)}
         </div>
@@ -95,64 +58,55 @@ export default function Dashboard() {
           <h4>Weekly Study Time</h4>
           <SkeletonLoader type="chart" />
         </div>
-        <div className={styles.upcomingSessions}>
-          <h4>Upcoming Sessions</h4>
-          <SkeletonLoader type="list" />
-        </div>
       </div>
     );
-  } 
-
-  const { progress, planner, syllabus, reminders, loading, error } = data;
-
-  if (error) {
-    return <div className="dataMessage">{error}</div>;
   }
 
+  const { progress, syllabi, upcoming } = data;
   const userNameForWelcomeCard = user?.user_metadata?.full_name || user?.email || 'User';
 
-  //Quick stats
   const quickStats = [
-    { label: 'Courses', value: syllabus ? syllabus.length : 0 },
-    { label: 'Current Streak', value: `${progress?.[0]?.current_streak || 0} days` },
-    { label: 'Longest Streak', value: `${progress?.[0]?.longest_streak || 0} days` },
+    { label: 'Courses', value: syllabi.length, max: 5, suffix: '' },
+    { label: 'Current Streak', value: progress.currentStreak, max: 30, suffix: ' days' },
+    { label: 'Longest Streak', value: progress.longestStreak, max: 30, suffix: ' days' },
+    { label: 'Hours This Week', value: progress.hoursThisWeek, max: 14, suffix: ' h' },
   ];
+
+  const reminders = upcoming.map(s => ({
+    id: s.id,
+    title: s.topic,
+    subtitle: s.course,
+    time: formatSessionTime(s.startTime),
+    onComplete: () => completeSession(s),
+  }));
 
   return (
     <div className={styles.dashboardGrid}>
-      <div style={{ gridColumn: '1 / 4' }}>
-        <WelcomeCard userName={userNameForWelcomeCard} progress={progress?.[0]?.overall_progress || 0} />
+      <div className={styles.welcomeArea}>
+        <WelcomeCard userName={userNameForWelcomeCard} progress={progress.overallProgress} />
       </div>
       <BaseCard className={styles.quickStatsCard}>
         <h3>Quick Statistics</h3>
-        {quickStats.map(stat => {
-          let percent = 0;
-          if (stat.label === 'Courses') {
-            percent = Math.min((stat.value / 5) * 100, 100);
-          } else if (stat.label === 'Current Streak') {
-            const days = parseInt(stat.value);
-            percent = Math.min((days / 30) * 100, 100);
-          } else if (stat.label === 'Longest Streak') {
-            const days = parseInt(stat.value);
-            percent = Math.min((days / 30) * 100, 100);
-          }
-          return (
-            <div key={stat.label} className={styles.statRow}>
-              <span>{stat.label}</span>
-              <span>{stat.value}</span>
-              <div className={styles.statBar}>
-                <div className={styles.statBarFill} style={{ width: `${percent}%` }} />
-              </div>
+        {quickStats.map(stat => (
+          <div key={stat.label} className={styles.statRow}>
+            <span>{stat.label}</span>
+            <span>{stat.value}{stat.suffix}</span>
+            <div className={styles.statBar}>
+              <div className={styles.statBarFill} style={{ width: `${Math.min((stat.value / stat.max) * 100, 100)}%` }} />
             </div>
-          );
-        })}
+          </div>
+        ))}
       </BaseCard>
       <BaseCard className={styles.chartCard}>
         <h3>Time Spent Studying</h3>
-        <StudyChartCard data={chartData} options={chartOptions} />
+        <StudyChartCard days={progress.dailyProgress} />
       </BaseCard>
-      <TopCoursesCard courses={syllabus} progress={progress} />
-      <RemindersCard reminders={reminders} />
+      <div className={styles.coursesArea}>
+        <TopCoursesCard courses={syllabi} progress={progress.courses} />
+      </div>
+      <div className={styles.upNextArea}>
+        <RemindersCard reminders={reminders} />
+      </div>
     </div>
   );
 }
