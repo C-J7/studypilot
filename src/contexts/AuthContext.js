@@ -1,25 +1,22 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '@/utils/supabase'
 
 const AuthContext = createContext({})
 
-const DEMO_FLAG = 'studypilot-demo'
+const STORAGE_KEY = 'studypilot-workspace'
 
-//Shared demo account, seeded by the API on every boot, so visitors can explore without signing up
-const DEMO_USER = {
-  id: 'demo-user',
-  email: 'demo@studypilot.app',
-  isDemo: true,
-  user_metadata: { full_name: 'Demo Student', department: 'Computer Science' },
-}
+//shortcut: a private workspace id per browser instead of accounts; the API trusts userId, add real auth before storing personal data
+const newWorkspace = (name) => ({
+  id: `ws-${crypto.randomUUID().replaceAll('-', '').slice(0, 16)}`,
+  user_metadata: { full_name: name?.trim() || 'Student', department: 'Personal workspace' },
+})
 
-const isDemoActive = () => {
+const readWorkspace = () => {
   try {
-    return localStorage.getItem(DEMO_FLAG) === '1'
+    return JSON.parse(localStorage.getItem(STORAGE_KEY))
   } catch {
-    return false
+    return null
   }
 }
 
@@ -28,64 +25,33 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (isDemoActive()) {
-      setUser(DEMO_USER)
-      setLoading(false)
-      return
-    }
-
-    supabase.auth.getSession()
-      .then(({ data: { session } }) => setUser(session?.user ?? null))
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false))
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!isDemoActive()) setUser(session?.user ?? null)
-    })
-
-    return () => subscription.unsubscribe()
+    setUser(readWorkspace())
+    setLoading(false)
   }, [])
 
-  const signIn = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-    if (error) throw error
-    return data
-  }
-
-  const signUp = async (email, password) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    })
-    if (error) throw error
-    return data
-  }
-
-  const startDemo = () => {
-    localStorage.setItem(DEMO_FLAG, '1')
-    setUser(DEMO_USER)
+  const start = (name) => {
+    const workspace = newWorkspace(name)
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(workspace))
+    } catch {
+      //Private mode: the workspace still works for this tab
+    }
+    setUser(workspace)
+    return workspace
   }
 
   const signOut = async () => {
-    if (user?.isDemo) {
-      localStorage.removeItem(DEMO_FLAG)
-      setUser(null)
-      return
-    }
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
+    try {
+      localStorage.removeItem(STORAGE_KEY)
+    } catch {}
+    setUser(null)
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut, startDemo }}>
+    <AuthContext.Provider value={{ user, loading, start, signOut }}>
       {!loading && children}
     </AuthContext.Provider>
   )
 }
 
-export const useAuth = () => {
-  return useContext(AuthContext)
-}
+export const useAuth = () => useContext(AuthContext)

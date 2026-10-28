@@ -199,7 +199,8 @@
 }
 .dashboardGrid {
   display: grid;
-  grid-template-columns: 2fr 2fr 1.2fr;
+  grid-template-columns: 1fr 1fr 360px;
+  align-content: start;
   grid-template-rows: auto auto;
   gap: 2rem;
   padding: 2rem;
@@ -288,6 +289,12 @@
     grid-column: 1 / -1;
     grid-row: auto;
   }
+}
+
+.quickStatsCard h3,
+.chartCard h3 {
+  color: #0f172a;
+  margin-bottom: 1.25rem;
 }
 
 .statRow {
