@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://devj7-studypilot-api.hf.space';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://sp-5rvl.onrender.com';
 
 const api = axios.create({ baseURL: API_URL, timeout: 90000 });
 
