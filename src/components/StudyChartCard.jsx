@@ -1,6 +1,4 @@
-import styles from "../styles/StudyChartCard.module.css";
-import Card from "@/components/BaseCard"
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 //Hours of completed study per day for the last week, from the progress endpoint
 export default function StudyChartCard({ days = [] }) {
@@ -8,20 +6,21 @@ export default function StudyChartCard({ days = [] }) {
   const hasStudy = chartData.some(d => d.hours > 0);
 
   return (
-    <Card title="" className={styles.studyTimeCard}>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={chartData}>
-          <XAxis dataKey="day" interval={0} />
-          <YAxis allowDecimals={false} label={{ value: "Hours", angle: -90, position: "insideLeft" }} />
-          <Tooltip formatter={(value) => [`${value} h`, 'Studied']} />
-          <Bar dataKey="hours" fill="#1e3a8a" radius={[4, 4, 0, 0]} />
+    <div style={{ marginTop: "1rem" }}>
+      <ResponsiveContainer width="100%" height={260}>
+        <BarChart data={chartData} margin={{ top: 8, right: 4, left: -20, bottom: 0 }}>
+          <CartesianGrid vertical={false} stroke="#eef2f8" />
+          <XAxis dataKey="day" interval={0} tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: "#64748b" }} />
+          <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: "#94a3b8" }} />
+          <Tooltip cursor={{ fill: "#f1f5fb" }} formatter={(value) => [`${value} h`, 'Studied']} />
+          <Bar dataKey="hours" fill="#2563eb" radius={[6, 6, 0, 0]} maxBarSize={36} />
         </BarChart>
       </ResponsiveContainer>
       {!hasStudy && (
         <div style={{ textAlign: "center", color: "#64748b", marginTop: "1rem" }}>
-          No study sessions yet. Start studying to see your progress!
+          No study sessions yet. Tick one off to see it here.
         </div>
       )}
-    </Card>
+    </div>
   );
 }

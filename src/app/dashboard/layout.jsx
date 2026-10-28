@@ -37,14 +37,14 @@ export default function DashboardLayout({ children }) {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login')
+      router.push('/')
     }
   }, [user, loading, router])
 
   const handleLogout = async () => {
     try {
       await signOut()
-      router.push('/login')
+      router.push('/')
     } catch (error) {
       console.error('Logout error:', error)
     }
@@ -151,10 +151,10 @@ export default function DashboardLayout({ children }) {
           onKeyDown={handleLogoutKey}
           tabIndex={0}
           role="button"
-          aria-label="Logout"
+          aria-label="Sign out"
         >
           <Logout className={styles.icon} />
-          <span>Logout</span>
+          <span>Sign out</span>
         </div>
       </nav>
     </aside>

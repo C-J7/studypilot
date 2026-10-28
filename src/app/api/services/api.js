@@ -25,6 +25,9 @@ export const getUserSyllabi = (userId) => api.get(`/api/syllabus/user/${userId}`
 
 export const getUserStudyPlans = (userId) => api.get(`/api/study-plan/user/${userId}`);
 
+export const getAuditTrail = (userId, size = 10) =>
+  api.get(`/api/audit/user/${userId}`, { params: { size } });
+
 export const searchSyllabi = (params) => api.get('/api/syllabus/search', { params });
 
 //Marks a session done or not done

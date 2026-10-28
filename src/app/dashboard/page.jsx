@@ -67,8 +67,8 @@ export default function Dashboard() {
 
   const quickStats = [
     { label: 'Courses', value: syllabi.length, max: 5, suffix: '' },
-    { label: 'Current Streak', value: progress.currentStreak, max: 30, suffix: ' days' },
-    { label: 'Longest Streak', value: progress.longestStreak, max: 30, suffix: ' days' },
+    { label: 'Current Streak', value: progress.currentStreak, max: 30, suffix: progress.currentStreak === 1 ? ' day' : ' days' },
+    { label: 'Longest Streak', value: progress.longestStreak, max: 30, suffix: progress.longestStreak === 1 ? ' day' : ' days' },
     { label: 'Hours This Week', value: progress.hoursThisWeek, max: 14, suffix: ' h' },
   ];
 
@@ -83,7 +83,8 @@ export default function Dashboard() {
   return (
     <div className={styles.dashboardGrid}>
       <div className={styles.welcomeArea}>
-        <WelcomeCard userName={userNameForWelcomeCard} progress={progress.overallProgress} />
+        <WelcomeCard userName={userNameForWelcomeCard} progress={progress.overallProgress}
+          nextUp={upcoming[0] && `${upcoming[0].topic}, ${formatSessionTime(upcoming[0].startTime)}`} />
       </div>
       <BaseCard className={styles.quickStatsCard}>
         <h3>Quick Statistics</h3>
