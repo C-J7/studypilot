@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import styles from './login.module.css'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
+import { useAuth } from '@/contexts/AuthContext'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -23,6 +24,7 @@ export default function Login() {
   const [forgotLoading, setForgotLoading] = useState(false)
   const [forgotSent, setForgotSent] = useState(false)
   const router = useRouter()
+  const { startDemo } = useAuth()
   const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
   //Remember Me: persist session in localStorage
@@ -134,6 +136,14 @@ export default function Login() {
               </form>
             )}
             <div className={styles.divider}><span>or</span></div>
+            <button
+              type="button"
+              className={styles.submitButton}
+              style={{ background: 'transparent', color: 'inherit', border: '1px solid currentColor' }}
+              onClick={() => { startDemo(); router.push('/dashboard') }}
+            >
+              Explore the demo
+            </button>
             <div className={styles.signupPrompt}>
               Don't have an account? <a className={styles.signupLink} href="/signup">Sign up</a>
             </div>

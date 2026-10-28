@@ -25,7 +25,8 @@ const CustomDropdown = ({ options, value, onChange, placeholder = 'Select...', l
   return (
     <div className={styles.dropdown} ref={ref}>
       {label && <label className={styles.label}>{label}</label>}
-      <div className={styles.inputBox} onClick={() => setOpen(o => !o)}>
+      {/* Open-only: focus already opens it, so toggling here closed it again on the same click */}
+      <div className={styles.inputBox} onClick={() => setOpen(true)}>
         <input
           className={styles.input}
           value={search || value || ''}

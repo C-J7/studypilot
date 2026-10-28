@@ -7,7 +7,7 @@ import { Chart, CategoryScale, LinearScale, BarElement, PointElement, LineElemen
 
 
 import { motion } from 'framer-motion'
-import api from '@/app/api/services/api'
+import { getUserProgressStats } from '@/app/api/services/api'
 import SkeletonLoader from '@/components/SkeletonLoader'
 import styles from './progress.module.css'
 import { useAuth } from '@/contexts/AuthContext' 
@@ -19,8 +19,8 @@ Chart.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement
 const defaultProgressData = {
   dailyProgress: [],
   streakProgress: [],
-  currentStreak: 1,
-  longestStreak: 1,
+  currentStreak: 0,
+  longestStreak: 0,
 };
 
 const ProgressPage = () => { 
@@ -33,7 +33,7 @@ const ProgressPage = () => {
       if (user && user.id) { 
         setLoading(true); 
         try {
-          const response = await api.get(`/api/progress/user/${user.id}`)
+          const response = await getUserProgressStats(user.id)
           setProgressData(response.data || defaultProgressData)
         } catch (error) {
           console.error('Error fetching progress:', error)
@@ -51,7 +51,7 @@ const ProgressPage = () => {
   }, [user])
 
   const chartData = {
-    labels: progressData?.dailyProgress?.map(day => day.date) || [],
+    labels: progressData?.dailyProgress?.map(day => day.label) || [],
     datasets: [{
       label: 'Study Hours',
       data: progressData?.dailyProgress?.map(day => day.hours) || [],
